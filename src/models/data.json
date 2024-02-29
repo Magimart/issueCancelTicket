@@ -1,0 +1,27 @@
+[
+    {
+        "airlineName": "Brussel Airlines",  
+        "departure": "Frankfurt am Main",
+        "destination": "Tokyo",
+        "departureTime": "23:00hr",
+        "arrivalTime": "23:00hr",
+        "seatNumber":["Br13"],
+        "numberOfTravelers": 2,
+        "costPrice": {
+            "price": 5400,
+            "currency":"Euro"
+        },
+           "ticketStatus": {
+            "canclellation":  {
+                "canclellationDate":"wed 12:53",
+                "cancellationState": false,
+                "reasons": "default"
+            },
+            "isTicketBooked":true
+        },
+        "user": [], 
+        "createdAt": "13:26"
+    }
+
+ 
+]
