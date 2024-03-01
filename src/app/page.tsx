@@ -1,9 +1,6 @@
 "use client"
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import  {
-  getAllSafarisAction ,
-} from "@/redux/ticketSlice/allTicketsActions";
 import { useEffect, useRef } from "react";
 import HomePageModel from "@/components/bodyComponents/HomePageModel";
 

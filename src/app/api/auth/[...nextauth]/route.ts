@@ -5,7 +5,7 @@ import NextAuth from 'next-auth';
 import type { NextApiRequest, NextApiResponse } from "next"
 
 import bcrypt from 'bcryptjs';
-import type { UserModel } from '@/lib/types/modelTypes';
+import type { UserModel } from '@/lib/types/userModel/userAuthTypes';
 
 interface Authorize{}
 type CombineRequest = Request & NextApiRequest;
