@@ -52,8 +52,14 @@ export const getAllTicketAction = createAsyncThunk("getAllTickets", async () => 
 
 export const getTicketDetailsAction = createAsyncThunk("getTicketDetails", async (id:string) => { 
 
-  console.log("ticket details actions fired ==>", id)
-  console.log("is the base url ==>", process.env.BASE_URL)
+  console.log("ticket details actions fired ==>", id);
+  console.log("is the base url ==>", process.env.BASE_URL);
+  console.log("no next auth url ==>", process.env.NEXTAUTH_URL);
+  console.log("no next development url ==>", process.env.DEVELOPEMENT_URL);
+  console.log("PRODUCTION WITH STRING url ==>", `${process.env.PRODUCTION_URL}`);
+  console.log("no string url ==>", process.env.PRODUCTION_URL);
+  console.log("no string url ==>", process.env);
+
 
   try {
     console.log("there is full url  ==> ", `${process.env.BASE_URL}/api/tickets/ticket_details/${id}`)
