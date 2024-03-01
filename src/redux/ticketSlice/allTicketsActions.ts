@@ -53,6 +53,8 @@ export const getAllTicketAction = createAsyncThunk("getAllTickets", async () => 
 export const getTicketDetailsAction = createAsyncThunk("getTicketDetails", async (id:string) => { 
 
   console.log("ticket details actions fired ==>", id)
+  console.log("is the base url ==>", process.env.BASE_URL)
+
   try {
     console.log("there is full url  ==> ", `${process.env.BASE_URL}/api/tickets/ticket_details/${id}`)
     const response = await axios(`${process.env.BASE_URL}/api/tickets/ticket_details/${id}`);  
