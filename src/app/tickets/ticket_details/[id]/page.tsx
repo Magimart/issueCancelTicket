@@ -13,7 +13,6 @@ type Params = {
 export default function SafariDetailsPage({params : {id}}: Params) {
 
   const {loading, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
-  const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
 
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef(false);
@@ -39,7 +38,7 @@ export default function SafariDetailsPage({params : {id}}: Params) {
 
 
     return (
-      <main className={`singlePageWraper ${!isOpen?"":"fixed"} z-1  bg-yellow-00`}>
+      <main className={`singlePageWraper `}>
         <div className="bg-sky-300 py-24 sm:py-32 w-full">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center">
@@ -151,7 +150,7 @@ export default function SafariDetailsPage({params : {id}}: Params) {
                       <span className="text-xl font-bold tracking-tight text-gray-900">Toll free</span>
                       <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">0001800 000</span>
                     </p>
-                    <a href="#" className="mt-10 block w-full rounded-md bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white
+                    <a href="#" className="mt-10 block w-full rounded-3xl bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white
                       shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 
                       focus-visible:outline-offset-2 focus-visible:outline-red-600">
                         Call us

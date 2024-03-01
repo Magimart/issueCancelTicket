@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoginInUserActions } from "@/redux/userSlice/authUsersActions";
 import axios from "axios";
 import { Credentials } from "@/lib/types/MyTypes";
+import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
 
 
 const LoginModel = ( ) => {
@@ -42,12 +43,13 @@ const LoginModel = ( ) => {
     useEffect(() => {  
         if(loginOk && loginStatus === 200){
             if(pathName === '/'){
+                dispatch(toggleShowHideHomeMenuActions(isOpen));
                 router.push(`${process.env.BASE_URL}/tickets/ticket_details/${ticketsDetails._id}`); 
-            }return;
+            };
         }else{
           console.log(loginError)  // create component to display this error to user
         }
-    }, [router, errorMessage,loginError,pathName, status, loading, ticketsDetails, loginOk, loginStatus]);
+    }, [router, pathName, loginError, loading, loginOk, loginStatus, dispatch, isOpen, ticketsDetails._id]);
     
 
     return(    

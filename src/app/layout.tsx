@@ -25,14 +25,7 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
       <body className={inter.className}>  
         <ReduxProvider>
          <HeaderModel/>
-            {children}
-           {pathName !== "/"  ? (   
-             <> 
-                {
-                  pathName !==  "/safaris/search_results"? <FooterModel/>:""
-                }
-             </>
-           ):"" }  
+            {children}  
         </ReduxProvider>
       </body>
     </html>

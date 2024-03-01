@@ -19,7 +19,7 @@ const HomePageModel = () => {
     >  
        {/* canceltiket */}
        {
-        !isOpen && <CancelTicket />
+        isOpen && <CancelTicket />
        }
                  
       {/*home component  */}

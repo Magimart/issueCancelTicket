@@ -4,15 +4,12 @@ import LogoImage from "./LogoImage";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
-import {  IconImageLoader } from "../sharedComponents/forImageComponents/ContentLoader";
 import { useRouter, usePathname  } from 'next/navigation'
 
 
 
 export default function HeaderModel(){
 
-  const pathName = usePathname();
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
   const {loading} = useSelector((state: RootState) => state.allTickets);
@@ -50,26 +47,23 @@ export default function HeaderModel(){
                   </div>
               </div>
               <div className="w-[50%] sm:w-[60%] md:w-[60%]  lg:w-[65h%]  xl:w-[70%] 2xl:w-[70%] h-full ">
-                  {
-                    loading && loading?(
-                      <div className="homeTitleWraper h-full  relative  w-[100%]  flex  flex-row justify-center items-center">
-                        
-                        <div className="flex flex-col w-max  justify-end items-center bg-blac">
-                            <span
-                              className="w-full flex justify-center font-bold text-base md:text-2xl lg:text-3xl xl:text-5xl xxl:text-7xl mt-2  
-                               text-blue-950  md:inline-block"
-                            >
-                              Ticket Resolution Center
-                              <span className="mx-[5px]   "> 
-                                  4 You
-                              </span>                    
-                            </span>                           
-                        </div>
+                 
+                 
+                <div className="homeTitleWraper h-full  relative  w-[100%]  flex  flex-row justify-center items-center">
+                  
+                  <div className="flex flex-col w-max  justify-end items-center bg-blac">
+                      <span
+                        className="w-full flex justify-center font-bold text-base md:text-2xl lg:text-2xl xl:text-3xl xxl:text-3xl mt-2  
+                          text-blue-950  md:inline-block"
+                      >
+                        Ticket Resolution Center
+                        <span className="mx-[5px]   "> 
+                            4 You
+                        </span>                    
+                      </span>                           
+                  </div>
 
-                    </div>
-                    ):
-                    "<MediumTextLoader/>"
-                  }
+              </div>                  
               </div>
             </div> 
           </div> 
