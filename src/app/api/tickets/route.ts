@@ -11,8 +11,8 @@ export  async function GET(req: Request, res: Response) {
     if(method !== "GET") {return}else{
       try {
 
-        const allSafaris = await Ticket.find({})
-        let response = new NextResponse(JSON.stringify(allSafaris), {status:200, 
+        const tickets = await Ticket.find({})
+        let response = new NextResponse(JSON.stringify(tickets), {status:200, 
       
          });                   
         res = response;

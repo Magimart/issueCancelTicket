@@ -26,6 +26,8 @@ const CancelTicketFormInput = ( ) => {
             e.preventDefault();
             if(typeof ticket === 'string'){
                 setFetch(true)
+
+                console.log("handle submit fired")
             //@ts-ignore
             dispatch(getTicketDetailsAction(ticket));
             setTicket("");
