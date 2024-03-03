@@ -35,11 +35,17 @@ export interface AuthLoginInitials{
         loginError: null;
         loginOk:boolean;
         loginStatus:number;
-    }
+    },
     tokenObj:{
-        token : string,
-        tokenStatus: number
-    }
+        token : string;
+        tokenStatus: number;
+    },
+    userSession: {
+        userId: string;
+        userName: string;
+        userEmail: string;
+        userRole: string;
+     }
 }
 
 

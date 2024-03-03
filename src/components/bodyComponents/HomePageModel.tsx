@@ -3,8 +3,9 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import CancelTicket from "../headerComponents/CancelTicket";
+import SideBarTicketLogin from "../headerComponents/SideBarTIcketLogin.tsx";
 import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
+import { getAllTicketAction } from "@/redux/ticketSlice/allTicketsActions";
 
 const HomePageModel = () => {
 
@@ -14,12 +15,12 @@ const HomePageModel = () => {
   return (
     <main 
       className="homeComponentWrapper 
-      p-0 m-0 w-screen h-full left-0 absolute flex items-center 
+      p-0 m-0 w-screen h-full right-0 absolute flex items-center 
       " 
     >  
-       {/* canceltiket */}
+       {/* canceltiket  amedues: 1053  */}
        {
-        isOpen && <CancelTicket />
+        isOpen && <SideBarTicketLogin />
        }
                  
       {/*home component  */}
@@ -59,7 +60,9 @@ const HomePageModel = () => {
                           <button className="relative hover:bg-gradient-to-tr from-white via-transparent to-sky-400
                            hover:text-blue-950 top-[50px] py-1 px-4 rounded-2xl right-6 
                            hover:bg-transparent bg-red-600"
-                           onClick={()=>dispatch(toggleShowHideHomeMenuActions(isOpen))}
+                           onClick={()=>dispatch(getAllTicketAction())}
+
+                          //  onClick={()=>dispatch(toggleShowHideHomeMenuActions(isOpen))}
                            >
                              Continue with your Cancelations
                           </button>

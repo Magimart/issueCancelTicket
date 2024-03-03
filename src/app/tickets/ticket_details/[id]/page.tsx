@@ -4,19 +4,25 @@ import { useDispatch, useSelector } from "react-redux";
 import React, {useEffect, useRef } from "react";
 import { useRouter } from 'next/router';
 import { getTicketDetailsAction } from "@/redux/ticketSlice/allTicketsActions";
-
+import { CalenderIcon, EditorIcon } from "@/components/headerComponents/icons/SvgIconAssests";
+import AdjustBookingInfo from "@/components/headerComponents/AdjustTicketDetails";
+import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
+import axios from "axios";
 type Params = {
   params : {id: string}
 }
 
 
-export default function SafariDetailsPage({params : {id}}: Params) {
+export default function TicketiDetailsPage({params : {id}}: Params) {
 
   const {loading, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
+  const {userSession} = useSelector((state: RootState) => state.authUsers);
+  const {userName, userEmail} = userSession;
+  const {toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
+
 
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef(false);
-    
     const {
       _id,   
       airlineName, 
@@ -25,9 +31,72 @@ export default function SafariDetailsPage({params : {id}}: Params) {
       createdAt 
     } = ticketsDetails;
 
+
+const getFlights = async() => {
+
+// const options = {
+//   method: 'GET',
+//   url: 'https://siddiq-such-flight-v1.p.rapidapi.com/search',
+//   params: {
+//     to: 'LHE',
+//     from: 'DXB',
+//     'depart-date': '2015-03-31',
+//     'return-date': '2015-04-07'
+//   },
+//   headers: {
+//     'X-RapidAPI-Key': '1996951949msh8da0664305c0226p1f406cjsn049e6058b2a7',
+//     'X-RapidAPI-Host': 'siddiq-such-flight-v1.p.rapidapi.com'
+//   }
+// } as any;
+      const startAirport ='Germany';
+      const endAirport = 'Uganda';
+      const startDate = '2015-03-31';
+      const endDate = '2015-04-07';
+
+        const options = await axios({
+          url: `https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/
+          v1.0/US/USD/en-US/${startAirport}/${endAirport}/${startDate}/${endDate}`,
+          method: 'GET',
+          headers: {'X-RapidAPI-Key': '1996951949msh8da0664305c0226p1f406cjsn049e6058b2a7'}
+        });
+
+        const option = {
+          method: 'GET',
+          url: 'https://sky-scanner3.p.rapidapi.com/flights/search-roundtrip',
+          params: {
+            fromEntityId: startAirport,
+            toEntityId: endAirport,
+            departDate: startDate,
+            returnDate: endDate
+          },
+          headers: {
+            'X-RapidAPI-Key': '1996951949msh8da0664305c0226p1f406cjsn049e6058b2a7',
+            'X-RapidAPI-Host': 'sky-scanner3.p.rapidapi.com'
+          }
+        } as any;
+
+
+        // const axios = require('axios');
+
+
+        try {
+          const response = await axios.get(option);
+          console.log(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+}
+
     useEffect(() => {
-       console.log(id, ticketsDetails)
-      if (ref.current === false) {        
+
+      const startAirport ='Germany';
+      const endAirport = 'Uganda';
+      const startDate = '2015-03-31';
+      const endDate = '2015-04-07';
+
+
+
+      if (ref.current === false) {  
        dispatch(getTicketDetailsAction(id));
       }
       return () => {
@@ -36,10 +105,20 @@ export default function SafariDetailsPage({params : {id}}: Params) {
     }, [dispatch, id, loading, ticketsDetails]);
 
 
-
     return (
-      <main className={`singlePageWraper `}>
-        <div className="bg-sky-300 py-24 sm:py-32 w-full">
+      <main className={`singlePageWraper relative  p-0 m-0 h-full left-0  flex items-center  `}>
+        
+          <div className="adjustBookingWrapper w-screen flex flex-row justify-end top-0 right-0 absolute z-10 ">
+            {
+              toggleBooking && <AdjustBookingInfo/>
+            }
+          </div>
+        <div className="relative top-24
+          flex flex-rowxl flex-col 
+          2xl:min-h-[20vh] 
+          h-[32%] sm:h-[60%]   md:h-[60%]  md:lg:h-[60%]  lg:h-[60%]  xl:h-[82%]  2xl:xl:h-[82%] 
+          w-full text-white bg-sky-300"
+        >
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center">
             </div>
@@ -55,7 +134,22 @@ export default function SafariDetailsPage({params : {id}}: Params) {
                        <span className="font-semibold">Booking Number</span>: {_id.toLocaleUpperCase()}
                     </h4>
                     <h4 className="mt-6 text-base leading-7 text-gray-600">
-                      <span className="font-semibold">Name</span>: John Dee
+                      <span className="font-semibold">Name</span>: {userName}
+                    </h4>
+                    <h4 className="mt-6 flex
+                      text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
+                      leading-7 text-gray-600"
+                    >
+                      <span>
+                      <svg className="svg-icon h-5" fill="red" viewBox="0 0 20 20">
+                        <path d="M10,1.375c-3.17,0-5.75,2.548-5.75,5.682c0,6.685,5.259,11.276,5.483,11.469c0.152,0.132,0.382,0.132,0.534,0c0.224-0.193,5.481-4.784,5.483-11.469C15.75,3.923,13.171,1.375,10,1.375 M10,17.653c-1.064-1.024-4.929-5.127-4.929-10.596c0-2.68,2.212-4.861,4.929-4.861s4.929,2.181,4.929,4.861C14.927,12.518,11.063,16.627,10,17.653 M10,3.839c-1.815,0-3.286,1.47-3.286,3.286s1.47,3.286,3.286,3.286s3.286-1.47,3.286-3.286S11.815,3.839,10,3.839 M10,9.589c-1.359,0-2.464-1.105-2.464-2.464S8.641,4.661,10,4.661s2.464,1.105,2.464,2.464S11.359,9.589,10,9.589"></path>
+                      </svg>
+                      </span>
+                      <span className="font-semibold"> Departing From
+                         <span className="font-normal">(s)</span></span>:
+                          {departure}
+                        <span>
+                        </span>
                     </h4>
                     <h4 className="mt-6 text-base leading-7 text-gray-600">
                       <span className="font-semibold">Price</span>: {costPrice.price}
@@ -65,19 +159,18 @@ export default function SafariDetailsPage({params : {id}}: Params) {
                       <span className="font-semibold">Airlines</span>: {airlineName}
                     </h4>
                   </div>
-                  <div className="relative flex flex-row space-x-4">
-                    <h4 className="mt-6 
+                  <div className="relative font-semibold flex flex-row space-x-4">
+                    <h4 className="flex mt-6 items-center
                       text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
                       leading-7 text-gray-600"
-                    >
-                      <span className="font-semibold"> Departing From<span className="font-normal">(s)</span></span>: 69930022ßß
-                    </h4>
-                    <h4 className="mt-6 
-                      text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
-                      leading-7 text-gray-600"
-                    >                      <span className="font-semibold"> Seat Number
+                    > 
+                      <span className="font-normal">
+                        <EditorIcon/>
+                      </span>                     
+                      <span className="pl-l"> Seat Number
                         <span className="font-normal">(s)</span>
                         </span >: <span className="flex flex-row">
+
                         {
                           seatNumber.map((el, i)=>{
                             return(
@@ -89,22 +182,29 @@ export default function SafariDetailsPage({params : {id}}: Params) {
                               </span>
                             )
                           })
-                        }
+                        }                        
                         </span>
                     </h4>
-                    <h4 className="mt-6 
+                    <h4 className="mt-6 flex items-center
                       text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
                       leading-7 text-gray-600"
-                    >                      <span className="font-semibold"> 
-                       Number of Travelers<span className="font-normal">(s)
+                    >
+                      <span className="font-semibold"> 
+                         Number of Travelers<span className="font-normal">(s)
                       </span>
                     </span>: {seatNumber.length}
                     </h4>
-                    <h4 className="mt-6 
+                    <h4 className="mt-6 flex items-center
                       text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
                       leading-7 text-gray-600"
-                    >                      <span className="font-semibold">Departure  
-                      </span>: 12:00 Uhr
+                    > 
+                      <span className="font-semibold">Departure</span>: 12:00 Uhr 
+                       <span
+                          className="bg-black- p-1 bg-opacity-20 rounded-lg hover:white cursor-pointer "
+                          onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
+                       >
+                          <CalenderIcon/>
+                      </span>
                     </h4>
                   </div>
                 <div className="mt-10 flex items-center gap-x-4">

@@ -45,57 +45,65 @@ import { TicketInitials } from '@/lib/types/MyTypes';
 
 
 export const getAllTicketAction = createAsyncThunk("getAllTickets", async () => {
-    const response = await axios(`${process.env.BASE_URL}/api/tickets`);
-    return response.data;
-  }
-);
+
+  console.log("this fireed")
+
+              var Amadeus = require('amadeus');
+
+              var amadeus = new Amadeus({
+                clientId: process.env.AMADEUS_cLIENT_ID,
+                clientSecret: process.env.AMADEUS_cLIENT_SECRET
+              });
+
+             await  amadeus.shopping.flightOffersSearch.get({
+                  originLocationCode: 'SYD',
+                  destinationLocationCode: 'BKK',
+                  departureDate: '2024-04-01',
+                  returnDate: '2024-06-01',
+                  adults: '2'
+              }).then(function(response){
+                console.log(" flights =>", response.data);
+              }).catch(function(responseError){
+                console.log(responseError.code);
+              });
+
+  const response = await axios(`${process.env.BASE_URL}/api/tickets`);
+  return response.data;
+});
 
 export const getTicketDetailsAction = createAsyncThunk("getTicketDetails", async (id:string) => { 
-
-  console.log("ticket details actions fired ==>", id);
-  console.log("is the base url ==>", process.env.BASE_URL);
-  console.log("no next auth url ==>", process.env.NEXTAUTH_URL);
-  console.log("no next development url ==>", process.env.DEVELOPEMENT_URL);
-  console.log("PRODUCTION WITH STRING url ==>", `${process.env.PRODUCTION_URL}`);
-  console.log("no string url ==>", process.env.PRODUCTION_URL);
-  console.log("no string url ==>", process.env);
-
-
   try {
     console.log("there is full url  ==> ", `${process.env.BASE_URL}/api/tickets/ticket_details/${id}`)
     const response = await axios(`${process.env.BASE_URL}/api/tickets/ticket_details/${id}`);  
-      console.log(" here is my response  ",  response)
+    console.log(" here is my response  ",  response)
     return response; 
-  } catch (error) {
-    
+  } catch (error) {    
     const response = error;     
     return response;
-
   } 
 });
 
 export const addNewSafarisAction = createAsyncThunk("addNewTicketAction", async (data:any) => {
   try {
-
-        const response = await axios.post(`${process.env.BASE_URL}/api/tickets`, data);
-        const isData  = await response.data;
-        return isData;
+    const response = await axios.post(`${process.env.BASE_URL}/api/tickets`, data);
+    const isData  = await response.data;
+    return isData;
   } catch (err) {
-        console.error(err)
+    console.error(err)
   }
 });
 
 
 const ticketSlice = createSlice({
-    name: "tickets",
-    initialState,
-    reducers: {
-      clearErrorMessageActions:(state, action)=>{
-         let errMsg = action.payload
-         errMsg = ""
-         state.errorMessage = errMsg;
-      },
+  name: "tickets",
+  initialState,
+  reducers: {
+    clearErrorMessageActions:(state, action)=>{
+        let errMsg = action.payload
+        errMsg = ""
+        state.errorMessage = errMsg;
     },
+  },
     
   extraReducers: (builder) => {
     builder.addCase(getAllTicketAction.fulfilled, (state, action: PayloadAction<any>) => {
@@ -111,30 +119,30 @@ const ticketSlice = createSlice({
 
     // Ticket details builder
     builder.addCase(getTicketDetailsAction.fulfilled, (state, action:PayloadAction<any> ) => {
-        if(action.type === "getTicketDetails/fulfilled"){
-          try {            
-              if(action.payload === undefined || action.payload === null){
-                state.ticketsDetails;  
-              }
-              else{
-                if(typeof action.payload.response === 'object'){
-                  let errorMsg = action.payload.response.data
-                  state.loading = false;
-                  state.errorMessage = errorMsg.split(".")[0]
-                  state.status = action.payload.response.status;
-                  state.ticketsDetails; 
-                }else{
-                  state.loading = true;
-                  state.status = action.payload.status
-                  state.ticketsDetails = action.payload.data;
-                }  
-              };
+      if(action.type === "getTicketDetails/fulfilled"){
+        try {            
+            if(action.payload === undefined || action.payload === null){
+              state.ticketsDetails;  
+            }
+            else{
+              if(typeof action.payload.response === 'object'){
+                let errorMsg = action.payload.response.data
+                state.loading = false;
+                state.errorMessage = errorMsg.split(".")[0]
+                state.status = action.payload.response.status;
+                state.ticketsDetails; 
+              }else{
+                state.loading = true;
+                state.status = action.payload.status
+                state.ticketsDetails = action.payload.data;
+              }  
+            };
 
-            } catch (error) {
-            console.log("error at getTicketDetails ==> ", error)
-          } 
-        }
-        return;
+          } catch (error) {
+          console.log("error at getTicketDetails ==> ", error)
+        } 
+      }
+      return;
     });  
     builder.addCase(getTicketDetailsAction.pending, (state, action) => {
       state.loading = true; 

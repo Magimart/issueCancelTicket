@@ -6,7 +6,6 @@ import type { TicketInitials } from '@/lib/types/MyTypes';
 // get ticketByID end point http://localhost:3000/api/tickets/ticket_details/:id
 export async function GET( request: Request,{ params }: { params: { id: string}}) {                       
     try {
-        console.log("üüüüüüüüüüüüüüüüüü end pont fired")
         await dbConnect();
         const safariDetails = await Ticket.findById(params.id);
         let response = new NextResponse(JSON.stringify(safariDetails), {status:200}); 

@@ -19,7 +19,7 @@ const LoginModel = ( ) => {
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
-    const {loading, loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
+    const {loading,userSession, loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
     const {status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const {loginStatus, loginError, loginOk } =loginStatusMsg;
     
@@ -46,6 +46,7 @@ const LoginModel = ( ) => {
                 dispatch(toggleShowHideHomeMenuActions(isOpen));
                 router.push(`${process.env.BASE_URL}/tickets/ticket_details/${ticketsDetails._id}`); 
             };
+            //eslse ==> redirect to user page___for later!
         }else{
           console.log(loginError)  // create component to display this error to user
         }
@@ -83,8 +84,8 @@ const LoginModel = ( ) => {
                 }          
         >
             <motion.div className="max-w-xl w-full  space-y-8 
-                    bg-whitec rounded-lg self-center
-                    p-4                    
+                     rounded-lg self-center
+                    p-4  relative top-[12em] my-12                  
                     bg-gradient-to-b from-transparent via-sky-300 to-transparent
                 " 
                 initial={{ 

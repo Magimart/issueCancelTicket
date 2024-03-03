@@ -36,7 +36,7 @@ export const getAllUsersAction = createAsyncThunk("getAllUsers", async () => {
 
 
 //_________________update
-export const bookCancelTerminAction:any = createAsyncThunk("bookTerminAction", async (isSelectedTermin) => { 
+export const updateBooking:any = createAsyncThunk("bookTerminAction", async (isSelectedTermin) => { 
     try { 
       let {id, isBooked, color} = isSelectedTermin as any; 
       
@@ -66,6 +66,7 @@ export const addNewUserAction = createAsyncThunk("addNewUserAction", async (data
     console.error(err)
   }
 });
+
 
 
 const usersSlice = createSlice({

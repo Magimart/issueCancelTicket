@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type IsTextArea = {
+type ToggleProps = {
   isOpen: boolean;
   errorMessageToggle: boolean;
+  toggleBooking: boolean;
 };
 
-const initialState: IsTextArea = {
+const initialState: ToggleProps = {
   isOpen: false,
-  errorMessageToggle: false
+  errorMessageToggle: false,
+  toggleBooking: false
 };
 
 
@@ -21,8 +23,11 @@ const toggleActions = createSlice({
   },
   
   toggleErrorMessageActions:(state, action)=>{
-    console.log(action)
     state.errorMessageToggle = !action.payload;
+  },
+  toggleBookingInfoActions:(state, action)=>{
+    console.log(action)
+    state.toggleBooking = !action.payload;
   },
 
   },
@@ -31,7 +36,9 @@ const toggleActions = createSlice({
 
 export const { 
   toggleShowHideHomeMenuActions,
-  toggleErrorMessageActions
+  toggleErrorMessageActions,
+  toggleBookingInfoActions
 } = toggleActions.actions;
+
 
 export default toggleActions.reducer;

@@ -1,21 +1,21 @@
-import React, {useState, useEffect,useRef, Fragment} from "react";
-import Link from "next/link";
+import React, { useEffect,useRef} from "react";
 import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import LogoImage from "./LogoImage";
 import { windowDimensionsActions } from "@/redux/globalVariables/windowDimensions";
 import CancelTicketFormInput from "./CanelTicketFormInputs";
-import LoginForm from "./LoginForm";
 import LoginPage from "@/app/auth/login/page";
+import { CloseIcon } from "./icons/SvgIconAssests";
+import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
+import DateAndTimePicker from "../sharedComponents/forImageComponents/DateTimePicker";
 
 
 
-export default function CancelTicket(){
-
+export default function AdjustBookingInfo(){
 
     const dispatch = useDispatch<AppDispatch>();
-    const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);  
+    const { toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
 
     const isYear = new Date().getFullYear();
@@ -33,22 +33,22 @@ export default function CancelTicket(){
 
 
     return (  
-       <div className={"h-[100%] w-[100%] z-5"}>
+       <div className={"h-[100vh] w-[100%] z-5"}>
            <section className="homeMenuWrap relative justify-end  
              flex flex-row h-full bg-sky-300 bg-opacity-30 
-             w-[80pvw]              
+             w-[100%]              
             "
            >  
-              {/* menu items_______________ right
+               {/* menu items_______________ right
                */}
-                 <div className="menuItemsWrap w-[60%]  md:w-[70%] lg:w-[40%] xl:w-[40%] 2xl:w-[40%]
-                     bg-white  
-                 ">
+                <div className="menuItemsWrap w-[60%]  md:w-[70%] lg:w-[40%] xl:w-[40%] 2xl:w-[40%]
+                    bg-white  
+                ">
                     <div className="homeMenuWraper relative                  
                         min-h-[100%] w-full           
                         "
                     >
-                         {/* sidebar header */}
+                        {/* sidebar header */}
                         <div className="sideBarWrapper  ">
                             <div className="relative">
                                 <div className="bg-sky-300 
@@ -69,28 +69,29 @@ export default function CancelTicket(){
                                             Tui 4 you
                                         </h1>  
                                     </div>
-                                    <div className="relative right-5
-                                       top-16 lg:top-20   xl:top-20 2xl:top-20 
+                                    <div className="relative right-
+                                       top-16 lg:top-20   xl:top-24 2xl:top-24 
                                     "
                                     >
                                         <button 
-                                            onClick={()=>dispatch(toggleShowHideHomeMenuActions(isOpen))}
-                                            className="
-                                             xlh-9 xlw-9 flex items-center border-4  text-white justify-center bg-teal-50
+                                            onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
+                                            className="z-5 absolute  right-10
+                                             xlh-9 xlw-9 flex items-center border-4  justify-center bg-teal-50m
                                             "
                                         >
-                                          ❌
+                                            <CloseIcon/>
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {/* form */}
-                        <div className="cancleTicketForm relative top-[10em] 
+                        <div className="cancleTicketForm relative  
                          px-6 xl:px-8 2xl:px-8
                          "
                         >
-                          {status === 200? <LoginPage/>: <CancelTicketFormInput/>}
+                           {/* <CancelTicketFormInput/> */}
+                           <DateAndTimePicker/>
                         </div>
                         {/* siderbar footer */}
                         <div
