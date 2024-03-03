@@ -43,7 +43,6 @@ import { TicketInitials } from '@/lib/types/MyTypes';
     } 
   } 
 
-
 export const getAllTicketAction = createAsyncThunk("getAllTickets", async () => {
 
   console.log("this fireed")
