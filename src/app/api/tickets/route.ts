@@ -1,15 +1,16 @@
 import dbConnect from '@/lib/dbConnect';
 import { NextResponse, } from 'next/server';
 import Ticket from "@/models/ticketModel";
+import axios from 'axios';
 
 export  async function GET(req: Request, res: Response) {
 
   try {
     const { method } = req;
-     await dbConnect()
+     await dbConnect() 
       
     if(method !== "GET") {return}else{
-      try {
+      try {   
 
         const tickets = await Ticket.find({})
         let response = new NextResponse(JSON.stringify(tickets), {status:200, 

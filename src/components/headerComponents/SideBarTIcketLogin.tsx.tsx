@@ -1,5 +1,5 @@
 import React, { useEffect,useRef} from "react";
-import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
+import { toggleShowHideHomeMenuActions} from "@/redux/toggleSlice/toggleActions";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import LogoImage from "./LogoImage";
@@ -16,6 +16,7 @@ export default function SideBarTicketLogin(){
     const dispatch = useDispatch<AppDispatch>();
     const {toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
+    const {isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
 
     const isYear = new Date().getFullYear();
 
@@ -72,9 +73,9 @@ export default function SideBarTicketLogin(){
                                        top-16 lg:top-20   xl:top-24 2xl:top-24 
                                     "
                                     >
-                                        <button 
-                                            onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
-                                            className="z-5 absolute  right-10
+                                        <button
+                                            onClick={()=>dispatch(toggleShowHideHomeMenuActions(isOpen))}
+                                              className="z-5 absolute  right-10
                                              xlh-9 xlw-9 flex items-center border-4  justify-center bg-teal-50m
                                             "
                                         >

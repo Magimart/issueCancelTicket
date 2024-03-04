@@ -3,18 +3,19 @@
 
 
 const nextConfig = {
-
      
     headers: async () => {
       return [
         {
-            source: "/api/:path*",
+            // source: "/api/:path*",
+            source: '/api/(.*)',
             headers: [
                 { key: "Access-Control-Allow-Credentials", value: "true" },
                 { key: "Access-Control-Allow-Origin", value: "https://issue-cancel-ticket-tui.vercel.app" }, // replace this your actual origin
                 { key: "Access-Control-Allow-Methods", value: "GET,DELETE,PATCH,POST,PUT" },
                 { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
-            ]
+    
+              ]
         }
     ]
     },
@@ -43,16 +44,19 @@ const nextConfig = {
     JWT_SECRET: process.env.JWT_SECRET,
     
     OPEN_WEATHER_API: process.env.OPEN_WEATHER_API,
+    TRAVEL_PAYOUT_TOKEN: process.env.TRAVEL_PAYOUT_TOKEN,
+    // rem!!
+    // AMADEUS_cLIENT_ID: process.env.AMADEUS_cLIENT_ID,
+    // AMADEUS_cLIENT_SECRET: process.env.AMADEUS_cLIENT_SECRET
+  }, 
 
-    AMADEUS_cLIENT_ID: process.env.AMADEUS_cLIENT_ID,
-    AMADEUS_cLIENT_SECRET: process.env.AMADEUS_cLIENT_SECRET
-  },      
   
   images: {
     domains: [
       'res.cloudinary.com', 
       'https://unsplash.com', 
       'http://openweathermap.org',
+      'https://api.travelpayouts.com',
       'www.tui4u.de'
     ],
   },

@@ -1,48 +1,40 @@
-import React, { useEffect,useRef} from "react";
-import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
+import React, {useEffect,useRef} from "react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import LogoImage from "./LogoImage";
 import { windowDimensionsActions } from "@/redux/globalVariables/windowDimensions";
-import CancelTicketFormInput from "./CanelTicketFormInputs";
-import LoginPage from "@/app/auth/login/page";
 import { CloseIcon } from "./icons/SvgIconAssests";
 import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
-import DateAndTimePicker from "../sharedComponents/forImageComponents/DateTimePicker";
-
-
+import FlightAvailability from "./FlightAvailability";
 
 export default function AdjustBookingInfo(){
-
     const dispatch = useDispatch<AppDispatch>();
     const { toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
-
     const isYear = new Date().getFullYear();
-
     const ref = useRef(false);
-       useEffect(() => {      
-            if (ref.current === false) {
-                dispatch(windowDimensionsActions());
-            }
-        
-            return () => {
-              ref.current = true;
-            };
-        }, [dispatch, status,ticketsDetails,errorMessage, loading]);
-
-
+    useEffect(() => {      
+        if (ref.current === false) {
+            dispatch(windowDimensionsActions());
+        }
+        return () => {
+            ref.current = true;
+        };
+    }, [dispatch, status,ticketsDetails,errorMessage, loading]);
     return (  
        <div className={"h-[100vh] w-[100%] z-5"}>
            <section className="homeMenuWrap relative justify-end  
-             flex flex-row h-full bg-sky-300 bg-opacity-30 
-             w-[100%]              
+             flex flex-row h-full  bg-opacity-30 
+             w-[100%]  
+             bg-red-500            
             "
            >  
                {/* menu items_______________ right
                */}
                 <div className="menuItemsWrap w-[60%]  md:w-[70%] lg:w-[40%] xl:w-[40%] 2xl:w-[40%]
-                    bg-white  
+                    bg-white
+                    bg-gradient-to-b from-transparent via-sky-50 to-sky-300 
+
                 ">
                     <div className="homeMenuWraper relative                  
                         min-h-[100%] w-full           
@@ -90,8 +82,7 @@ export default function AdjustBookingInfo(){
                          px-6 xl:px-8 2xl:px-8
                          "
                         >
-                           {/* <CancelTicketFormInput/> */}
-                           <DateAndTimePicker/>
+                           <FlightAvailability/>
                         </div>
                         {/* siderbar footer */}
                         <div

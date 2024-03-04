@@ -122,22 +122,22 @@ const getFlights = async() => {
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center">
             </div>
-            <div className="mx-auto mt-16 max-w-7xl rounded-3xl ring-1 ring-red-600 
-               sm:mt-20 lg:mx-0 lg:flexc lg:max-w-nonec
+            <div className="mx-au mt-16 w-full rounded-3xl ring-1 ring-red-600 
+               sm:mt-20 
                bg-gradient-to-b from-transparent via-sky-50 to-sky-300
+
               "
             >
-              <div className="relative  p-8 sm:p-10 lg:flex-auton">
+              <div className="relative  p-8 sm:p-10 ">
                 <h3 className="text-2xl font-bold tracking-tight text-blue-900">With Tui 4 U cancellations and adjustments are made with ease</h3>
-                  <div className="relative flex flex-rowg space-x-4">
-                   <h4 className="mt-6 text-base leading-7 text-gray-600">
+                  <div className="relative  text-base flex flex-col space-x-4">
+                   <h4 className="mt-6 leading-7 text-gray-600">
                        <span className="font-semibold">Booking Number</span>: {_id.toLocaleUpperCase()}
                     </h4>
-                    <h4 className="mt-6 text-base leading-7 text-gray-600">
+                    <h4 className="mt-6  leading-7 text-gray-600">
                       <span className="font-semibold">Name</span>: {userName}
                     </h4>
                     <h4 className="mt-6 flex
-                      text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
                       leading-7 text-gray-600"
                     >
                       <span>
@@ -151,22 +151,19 @@ const getFlights = async() => {
                         <span>
                         </span>
                     </h4>
-                    <h4 className="mt-6 text-base leading-7 text-gray-600">
+                    <h4 className="mt-6 leading-7 text-gray-600">
                       <span className="font-semibold">Price</span>: {costPrice.price}
                         <span className="font-normal pl-1">{costPrice.currency}</span>
                     </h4> 
-                    <h4 className="mt-6 text-base leading-7 text-gray-600">
+                    <h4 className="mt-6 leading-7 text-gray-600">
                       <span className="font-semibold">Airlines</span>: {airlineName}
                     </h4>
                   </div>
-                  <div className="relative font-semibold flex flex-row space-x-4">
+                  {/* row 2 */}
+                  <div className="relative text-xs font-semibold flex flex-col space-x-4">
                     <h4 className="flex mt-6 items-center
-                      text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
                       leading-7 text-gray-600"
-                    > 
-                      <span className="font-normal">
-                        <EditorIcon/>
-                      </span>                     
+                    >                      
                       <span className="pl-l"> Seat Number
                         <span className="font-normal">(s)</span>
                         </span >: <span className="flex flex-row">
@@ -186,7 +183,6 @@ const getFlights = async() => {
                         </span>
                     </h4>
                     <h4 className="mt-6 flex items-center
-                      text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
                       leading-7 text-gray-600"
                     >
                       <span className="font-semibold"> 
@@ -194,14 +190,14 @@ const getFlights = async() => {
                       </span>
                     </span>: {seatNumber.length}
                     </h4>
-                    <h4 className="mt-6 flex items-center
-                      text-xs sm:text-base md:text-base lg:text-base xl:text-base 2xl:text-base
-                      leading-7 text-gray-600"
+                    <h4 
+                      onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
+                      className="mt-6 text-lg  text-white flex justify-center items-center bg-red-600 rounded-3xl
+                      leading-7"
                     > 
-                      <span className="font-semibold">Departure</span>: 12:00 Uhr 
+                      <span className="font-semibold mx-3">Change Departure and Destination</span> 
                        <span
                           className="bg-black- p-1 bg-opacity-20 rounded-lg hover:white cursor-pointer "
-                          onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
                        >
                           <CalenderIcon/>
                       </span>

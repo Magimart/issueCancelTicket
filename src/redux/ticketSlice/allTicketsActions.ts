@@ -2,6 +2,7 @@ import { createSlice , createAsyncThunk, current} from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { TicketInitials } from '@/lib/types/MyTypes';
+import { AppDispatch, RootState } from "@/redux/store";
 
   interface IState{
     loading: boolean;
@@ -39,34 +40,12 @@ import { TicketInitials } from '@/lib/types/MyTypes';
         isTicketBooked: false
       },
       createdAt: new Date(),
-     
     } 
   } 
 
+
 export const getAllTicketAction = createAsyncThunk("getAllTickets", async () => {
-
-  console.log("this fireed")
-
-              var Amadeus = require('amadeus');
-
-              var amadeus = new Amadeus({
-                clientId: process.env.AMADEUS_cLIENT_ID,
-                clientSecret: process.env.AMADEUS_cLIENT_SECRET
-              });
-
-             await  amadeus.shopping.flightOffersSearch.get({
-                  originLocationCode: 'SYD',
-                  destinationLocationCode: 'BKK',
-                  departureDate: '2024-04-01',
-                  returnDate: '2024-06-01',
-                  adults: '2'
-              }).then(function(response){
-                console.log(" flights =>", response.data);
-              }).catch(function(responseError){
-                console.log(responseError.code);
-              });
-
-  const response = await axios(`${process.env.BASE_URL}/api/tickets`);
+const response = await axios(`${process.env.BASE_URL}/api/tickets`);
   return response.data;
 });
 
@@ -90,6 +69,23 @@ export const addNewSafarisAction = createAsyncThunk("addNewTicketAction", async 
   } catch (err) {
     console.error(err)
   }
+});
+
+export const searchFlightAvailabilityAction = createAsyncThunk("searchFlights", async(data:any) => {
+  
+  const isData = {
+    origin: 'BER',
+    destination: 'LON',
+    departDate: '2024-10',
+    returnDate: '2024-11'
+  }
+  console.log("this fired at this point", isData)
+      
+  const response = await axios.post(`${process.env.BASE_URL}/api/tickets/available_flights`, isData);
+
+  console.log("this is res actions", response)
+
+    return response;
 });
 
 
@@ -147,6 +143,20 @@ const ticketSlice = createSlice({
       state.loading = true; 
     });
 
+    //search availability
+    builder.addCase(searchFlightAvailabilityAction.fulfilled, (state, action: PayloadAction<any>) => {
+        
+      console.log("some data for the frontend  ", action);
+      // if(!state.allTickets.length){
+      //   state.loading = true;
+      //   state.allTickets.push(...action.payload);
+      //}
+      return;
+    });  
+    builder.addCase(searchFlightAvailabilityAction.pending, (state, action: PayloadAction<any>) => {
+      state.loading = true;
+    });
+
    }
 });
   
@@ -155,7 +165,10 @@ export const { clearErrorMessageActions}  = ticketSlice.actions;
 export default ticketSlice.reducer;
 
 
-  
 
 
+
+function fetchBaseQuery(arg0: { baseUrl: string; prepareHeaders: (headers: any, { getState }: { getState: any; }) => any; }) {
+  throw new Error("Function not implemented.");
+}
   
