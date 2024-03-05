@@ -11,7 +11,6 @@ export interface TicketInitials {
         price: number,
         currency:string
     },
-    ticketIssued: boolean,
     ticketStatus: {
         canclellation:  {
             canclellationDate: string,

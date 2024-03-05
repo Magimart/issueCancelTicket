@@ -3,13 +3,18 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { TicketInitials } from '@/lib/types/MyTypes';
 import { AppDispatch, RootState } from "@/redux/store";
+import { getArray } from "@/lib/utils/helpers";
 
   interface IState{
     loading: boolean;
     errorMessage: string;
     status: number;
     allTickets: object[];
-    ticketsDetails: TicketInitials
+    ticketsDetails: TicketInitials;
+    foundNewFlights: {
+       foundFlights: any[];
+       cheapRecommendedFlights:  any[] 
+    }
   }
 
   const initialState:IState = {
@@ -30,7 +35,6 @@ import { AppDispatch, RootState } from "@/redux/store";
         price: 0,
         currency: ""
       },
-      ticketIssued: false,
       ticketStatus: {
         canclellation: {
           canclellationDate: "",
@@ -39,8 +43,13 @@ import { AppDispatch, RootState } from "@/redux/store";
         },
         isTicketBooked: false
       },
+      
       createdAt: new Date(),
-    } 
+    } ,
+    foundNewFlights: {
+      foundFlights: [],
+      cheapRecommendedFlights: []
+    }
   } 
 
 
@@ -73,18 +82,15 @@ export const addNewSafarisAction = createAsyncThunk("addNewTicketAction", async 
 
 export const searchFlightAvailabilityAction = createAsyncThunk("searchFlights", async(data:any) => {
   
-  const isData = {
+  const isData = {  // replace with data
     origin: 'BER',
     destination: 'LON',
     departDate: '2024-10',
     returnDate: '2024-11'
-  }
-  console.log("this fired at this point", isData)
-      
-  const response = await axios.post(`${process.env.BASE_URL}/api/tickets/available_flights`, isData);
-
-  console.log("this is res actions", response)
-
+  }   
+  console.log("is data  ==> ",data)   
+  const response = await axios.post(`${process.env.BASE_URL}/api/tickets/available_flights`, data);
+  console.log("this is res actions", response);
     return response;
 });
 
@@ -94,9 +100,9 @@ const ticketSlice = createSlice({
   initialState,
   reducers: {
     clearErrorMessageActions:(state, action)=>{
-        let errMsg = action.payload
-        errMsg = ""
-        state.errorMessage = errMsg;
+      let errMsg = action.payload
+      errMsg = ""
+      state.errorMessage = errMsg;
     },
   },
     
@@ -145,12 +151,24 @@ const ticketSlice = createSlice({
 
     //search availability
     builder.addCase(searchFlightAvailabilityAction.fulfilled, (state, action: PayloadAction<any>) => {
-        
-      console.log("some data for the frontend  ", action);
-      // if(!state.allTickets.length){
-      //   state.loading = true;
-      //   state.allTickets.push(...action.payload);
-      //}
+       if(action && action.payload.status === 200){
+          const {foundFlights, recommendedPrices} = action.payload.data;
+          if(foundFlights.success || recommendedPrices.success ){
+              const flights = foundFlights.data;
+              const cheapFlight = recommendedPrices.data;
+              state.loading = true; 
+              state.status = 200             
+              const isFoundFlight :any =getArray(flights);
+              state.foundNewFlights.foundFlights = isFoundFlight ;
+              const cheapPrice :any = getArray(cheapFlight);
+              state.foundNewFlights.cheapRecommendedFlights = cheapPrice;                             
+          }else {
+           console.log("sorry No flight was found for you")
+            state.loading = false;
+            state.errorMessage = "sorry No flight matched your selected dates";
+           // retun state
+          }
+       }
       return;
     });  
     builder.addCase(searchFlightAvailabilityAction.pending, (state, action: PayloadAction<any>) => {

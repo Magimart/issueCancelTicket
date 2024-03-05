@@ -47,9 +47,12 @@ const FlightAvailability = ( ) => {
     
 
     return(
-        <motion.div className="cancelTicketWrapper top-20 bg-transparent px-6 py-8  shadow-md text-black w-full
-            space-y-8 relative z-1
-            bg-gradient-to-b from-transparent via-sky-50 to-sky-300 p-3 rounded-lg"
+        <motion.div
+           className="cancelTicketWrapper 
+              top-20 bg-transparent px-6 py-8  shadow-md text-black
+              items-center
+              space-y-8 relative z-1
+              bg-gradient-to-b from-transparent via-sky-50 to-sky-300  rounded-lg"
             initial={{ 
                 height: "1%", 
                 width: "1%", 
@@ -74,21 +77,21 @@ const FlightAvailability = ( ) => {
                 }
             } 
         >
-         <div className="absolute top-2"> 
-           {
-             errorMessage && errorMessage.length? <ErrorMessageToggle/> :""
-           }             
-        </div>   
-            <div className="emailWrapper">
+            <div className="absolute top-2 "> 
+            {
+                errorMessage && errorMessage.length? <ErrorMessageToggle/> :""
+            }             
+            </div>   
+            <div className="emailWrapper ">
                 <form 
-                   onSubmit={handleFormSubmit} 
-                   className="mt-8d space-y-6"
+                    onSubmit={handleFormSubmit} 
+                    className="mt-8d space-y-6"
                 >
-                    <div className="space-y-">
+                    <div className="space-y- ">
                         <h3 className="text-black font-bold text-lg py-2"  >Change Flight: 
-                           {
+                            {
                             // loading && loading?<IconImageLoader/>:""                 
-                           }
+                            }
                         
                         </h3>
 
@@ -114,9 +117,11 @@ const FlightAvailability = ( ) => {
                             value={destination}
                             onChange={(e) => setDestination(e.target.value)}
                         />
-                        <div className="flex flex-row justify-between w-full space-y-1 "> 
-                           <div className=" w-full h-full space-y-1 space-x-2    ">
-                             <label className=" text-md">Departure date</label>
+                        <div className="flex flex-col md:flex-row xl:flex-row 2xl:flex-row  justify-between w-full space-y-1 
+                            "
+                            > 
+                            <div className=" w-full h-full space-y-1 space-x-2    ">
+                                <label className=" text-md">Departure date</label>
                                 <DatePicker
                                 selected={departDate}
                                 showIcon
@@ -125,19 +130,20 @@ const FlightAvailability = ( ) => {
                                 />
                             </div>
                             <div className=" w-full h-full space-y-1 space-x-2    ">
-                             <label className=" text-md">Return date</label>
+                                <label className=" text-md">Return date</label>
                                 <DatePicker
                                 selected={returnDate}
+                                showIcon
                                 onChange={(date) => setReturnDate(date)}
                                 monthsShown={2}
                                 className="p-1 rounded-t-lg"
                                 />
                             </div>
-                         </div>
+                            </div>
                     </div>
                     <div>                        
                         <button
-                           type="submit" className={`group relative h-11 w-full
+                            type="submit" className={`group relative h-11 w-full
                             flex justify-center py-2 px-4 border 
                             border-transparent text-xl font-medium rounded-3xl 
                             text-white 
@@ -149,7 +155,7 @@ const FlightAvailability = ( ) => {
                             `}
                             disabled={errorMessage && errorMessage.length?true:false}
                         >
-                          find flight
+                            find flight
                         </button> 
                     </div>               
                 </form>

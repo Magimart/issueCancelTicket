@@ -8,7 +8,6 @@ interface FlightSearch{
   returnDate:Date
 }
 export  async function POST(req: Request, res: Response) {
-
   try {
     const { method } = req;
      await dbConnect()
@@ -16,19 +15,19 @@ export  async function POST(req: Request, res: Response) {
     if(method !== "POST") {return}else{
       try {
         const search:FlightSearch = await req.json();
-        console.log(search);
         const {
           origin, destination, departDate, returnDate
         } = search 
 
-        // get cheapest ticket
-        const availableFlights:any = await axios.get(`https://api.travelpayouts.com/v1/prices/cheap?origin=${origin}&destination=${destination}&depart_date=${departDate}&return_date=${returnDate}&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
+        // get flichts as per user query
+        const availableFlights:any = await axios.get(`https://api.travelpayouts.com/v1/prices/cheap?origin=${origin}&destination=${destination}&depart_date=${departDate}&return_date=${returnDate}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
         .then(function(response){
            return response.data;
         }); 
      
         // recommended prices replace hardcoded values!!!
-        const cheapestPrices:any = await axios.get(`https://api.travelpayouts.com/v1/prices/monthly?origin=BER&destination=DXB&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
+        //const cheapestPrices:any = await axios.get(`https://api.travelpayouts.com/v1/prices/monthly?origin=BER&destination=DXB&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
+        const cheapestPrices:any = await axios.get(`https://api.travelpayouts.com/v1/prices/monthly?origin=${origin}&destination=${destination}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
         .then(function(response){
            return response.data;
         }); 
