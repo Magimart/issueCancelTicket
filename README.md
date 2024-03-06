@@ -1,27 +1,29 @@
 ## TUI 4 U   flight cancellation and booking App
 
 ## Getting Started get start with how this Demo App works.
-With this Demo App we are assumming that the user has already booked a ticket and wishes to cancel that same time.
+With this Demo App we are assumming that the user has already booked a ticket and wishes to cancel that it.
 Here is the main link to the deployed App
-Please follow link and continue from there.
-App link: https://issue-cancel-ticket-tui.vercel.app/
-Gitthub Link and Source code: https://github.com/Magimart/issueCancelTicket-tui/tree/main
-# Link for the most update instruction about this app.
-if made changes in the app i will doccument them here on this link.
+- Please follow link and continue from there. But first please copy ticket number, email and passwords from below.
 
-# NOTE: You will need the following in order to use the App
+# Use full links in any case
+- App link: https://issue-cancel-ticket-tui.vercel.app/
+- Gitthub Link and Source code: https://github.com/Magimart/issueCancelTicket-tui/tree/main
+# Link for the most update instruction about this APP.
+if I made changes in the app I will doccument them here on this link.
+
+# NOTE: You will need the following in order to try out the Demo APP
 
 ```bash
-Booking or Ticket Number: user one of this ticket number in the in the Ticket Number UI
+Booking or Ticket Number: user one of this ticket numbers in the Ticket Number UI
  65de530a3e76ff8e41047e54
  65ddf234813d78ba4e3269ee
  65ddf2ab813d78ba4e3269f0
 
 User Credentials i.e email  and password:
-here are lists of emails and passwords you can use
+You can use any of the emails below with same password for both
 Email: fel@gmail.com , valn@gmail.com
 Password: 123456
-Note that passwords work with all the listed emails
+
 ```
 # Note: You can also register as a user by creating an account.
 - Register link: https://issue-cancel-ticket-tui.vercel.app/auth/register
