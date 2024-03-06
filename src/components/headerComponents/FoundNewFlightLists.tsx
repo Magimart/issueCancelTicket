@@ -105,12 +105,16 @@ export default function FoundNewFlightLists(){
                                                     <span>Price: {el && el[1].price}</span> USD
                                                     <span>Transfers: {el && el[1].transfers}</span>
                                                     </p>
-                                                    <button className="bg-red-600 text-white p-2">
-                                                        view details
-                                                    </button>
-                                                    <button className="bg-red-600 text-white p-2">
-                                                        book flight
-                                                    </button>
+                                                    <div className="flex flex-col text-black ">
+                                                       <button className="bg-sky-300 k px-2  m-1 rounded-2xl">
+                                                            view details
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => getSelectedFlight(el)}
+                                                            className="bg-red-600 hover:bg-sky-300 hover:text-black text-white m-1 rounded-2xl py px-2">
+                                                            book flight
+                                                        </button>
+                                                 </div>
                                                 </td>  
                                             </tr> 
                                         )
