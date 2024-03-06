@@ -5,7 +5,8 @@ import LogoImage from "./LogoImage";
 import { windowDimensionsActions } from "@/redux/globalVariables/windowDimensions";
 import { CloseIcon } from "./icons/SvgIconAssests";
 import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
-import FlightAvailability from "./FlightAvailability";
+import FlightAvailability from "./FindFlights";
+import LoggedInUserSession from "./LoggedInUserSession";
 
 export default function AdjustBookingInfo(){
     const dispatch = useDispatch<AppDispatch>();
@@ -13,6 +14,7 @@ export default function AdjustBookingInfo(){
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const isYear = new Date().getFullYear();
     const ref = useRef(false);
+    
     useEffect(() => {      
         if (ref.current === false) {
             dispatch(windowDimensionsActions());
@@ -60,6 +62,9 @@ export default function AdjustBookingInfo(){
                                         >
                                             Tui 4 you
                                         </h1>  
+                                    </div>
+                                    <div>
+                                      <LoggedInUserSession/>
                                     </div>
                                     <div className="relative right-
                                        top-16 lg:top-20   xl:top-24 2xl:top-24 

@@ -88,9 +88,7 @@ export const searchFlightAvailabilityAction = createAsyncThunk("searchFlights", 
     departDate: '2024-10',
     returnDate: '2024-11'
   }   
-  console.log("is data  ==> ",data)   
   const response = await axios.post(`${process.env.BASE_URL}/api/tickets/available_flights`, data);
-  console.log("this is res actions", response);
     return response;
 });
 
@@ -158,12 +156,11 @@ const ticketSlice = createSlice({
               const cheapFlight = recommendedPrices.data;
               state.loading = true; 
               state.status = 200             
-              const isFoundFlight :any =getArray(flights);
+              const isFoundFlight :any = getArray(flights);
               state.foundNewFlights.foundFlights = isFoundFlight ;
               const cheapPrice :any = getArray(cheapFlight);
               state.foundNewFlights.cheapRecommendedFlights = cheapPrice;                             
           }else {
-           console.log("sorry No flight was found for you")
             state.loading = false;
             state.errorMessage = "sorry No flight matched your selected dates";
            // retun state
@@ -185,7 +182,7 @@ export default ticketSlice.reducer;
 
 
 
-
+// for query manipaltions later!!
 function fetchBaseQuery(arg0: { baseUrl: string; prepareHeaders: (headers: any, { getState }: { getState: any; }) => any; }) {
   throw new Error("Function not implemented.");
 }

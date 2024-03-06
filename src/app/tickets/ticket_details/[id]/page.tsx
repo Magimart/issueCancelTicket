@@ -9,6 +9,8 @@ import AdjustBookingInfo from "@/components/headerComponents/AdjustTicketDetails
 import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
 import axios from "axios";
 import FoundFlights from "@/components/headerComponents/FoundFlights";
+import { LoggedInUserAction } from "@/redux/userSlice/authUsersActions";
+
 type Params = {
   params : {id: string}
 }
@@ -18,10 +20,9 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
 
   const {loading, ticketsDetails, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
   const {userSession} = useSelector((state: RootState) => state.authUsers);
-  const {userName, userEmail} = userSession;
-  const {toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
-  const {cheapRecommendedFlights, foundFlights} = foundNewFlights;
-  console.log(" no loading ===>", loading)
+  const {userName} = userSession;
+  const {toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);
+  const {cheapRecommendedFlights, foundFlights} = foundNewFlights
 
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef(false);
@@ -29,79 +30,20 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
       _id,   
       airlineName, 
       departure, departureTime, numberOfTravelers,destination,
-      arrivalTime,seatNumber, costPrice, ticketStatus, user,
+      arrivalTime, seatNumber, costPrice, ticketStatus, user,
       createdAt 
     } = ticketsDetails;
 
 
-const getFlights = async() => {
-
-// const options = {
-//   method: 'GET',
-//   url: 'https://siddiq-such-flight-v1.p.rapidapi.com/search',
-//   params: {
-//     to: 'LHE',
-//     from: 'DXB',
-//     'depart-date': '2015-03-31',
-//     'return-date': '2015-04-07'
-//   },
-//   headers: {
-//     'X-RapidAPI-Key': '1996951949msh8da0664305c0226p1f406cjsn049e6058b2a7',
-//     'X-RapidAPI-Host': 'siddiq-such-flight-v1.p.rapidapi.com'
-//   }
-// } as any;
-      const startAirport ='Germany';
-      const endAirport = 'Uganda';
-      const startDate = '2015-03-31';
-      const endDate = '2015-04-07';
-
-        const options = await axios({
-          url: `https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/
-          v1.0/US/USD/en-US/${startAirport}/${endAirport}/${startDate}/${endDate}`,
-          method: 'GET',
-          headers: {'X-RapidAPI-Key': '1996951949msh8da0664305c0226p1f406cjsn049e6058b2a7'}
-        });
-
-        const option = {
-          method: 'GET',
-          url: 'https://sky-scanner3.p.rapidapi.com/flights/search-roundtrip',
-          params: {
-            fromEntityId: startAirport,
-            toEntityId: endAirport,
-            departDate: startDate,
-            returnDate: endDate
-          },
-          headers: {
-            'X-RapidAPI-Key': '1996951949msh8da0664305c0226p1f406cjsn049e6058b2a7',
-            'X-RapidAPI-Host': 'sky-scanner3.p.rapidapi.com'
-          }
-        } as any;
-
-
-        // const axios = require('axios');
-
-
-        try {
-          const response = await axios.get(option);
-          console.log(response.data);
-        } catch (error) {
-          console.error(error);
-        }
-}
-
     useEffect(() => {
-      const startAirport ='Germany';
-      const endAirport = 'Uganda';
-      const startDate = '2015-03-31';
-      const endDate = '2015-04-07';
-
       if (ref.current === false) {  
        dispatch(getTicketDetailsAction(id));
+       dispatch(LoggedInUserAction());
       }
       return () => {
         ref.current = true;
       };
-    }, [dispatch, id, loading, ticketsDetails]);
+    }, [dispatch, id, userName, loading, ticketsDetails]);
 
 
     return (
@@ -114,7 +56,7 @@ const getFlights = async() => {
         </div>
         <div className="adjustBookingWrapper w-full !! flex flex-row justify-start top-0 left-0 absolute  ">
           {
-            toggleBooking && <FoundFlights/>
+            loading && cheapRecommendedFlights.length && <FoundFlights/>
           }
         </div>
 

@@ -23,28 +23,59 @@ export interface TicketInitials {
     createdAt:Date 
 }
 
+export interface BookingInitials{
+    bookingName: string;
+    flightNumbers:string[];
+    numberOfTravelers: number;
+    seatNumber:string[];
+    totalPerson: {
+        price: number;
+        currency: string;
+    };
+    Ticket: string[];
+    user:string[]; 
+    createdAt:Date
+}
+
 export interface Credentials{
     email:string,
     password: string
 }
 
-export interface AuthLoginInitials{
-    loading: boolean,
-    loginStatusMsg :{         
-        loginError: null;
-        loginOk:boolean;
-        loginStatus:number;
-    },
-    tokenObj:{
-        token : string;
-        tokenStatus: number;
-    },
-    userSession: {
-        userId: string;
-        userName: string;
-        userEmail: string;
-        userRole: string;
-     }
+export interface NewUser{
+    name:string;
+    email: string;
+    password: string;  
+    role:string;
+    registerStatus:number;
+    createdAt: Date;
+    // resetPasswordToken: String;
+    // resetPasswordExpire: Date;
+}
+export interface UserTokenObj{
+    token : string;
+    tokenStatus: number;
+}
+
+export interface UserSession{  
+    userId: string;
+    userName: string;
+    userEmail: string;
+    userRole: string;   
+}
+
+export interface LoginStatusMsg {         
+    loginError: null;
+    loginOk:boolean;
+    loginStatus:number;
+}
+
+export interface UserAuthInitials{
+    loading: boolean;
+    loginStatusMsg :LoginStatusMsg;
+    tokenObj:UserTokenObj;
+    userSession:UserSession;
+    addNewUser:NewUser;
 }
 
 

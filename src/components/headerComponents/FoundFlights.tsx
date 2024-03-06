@@ -5,24 +5,16 @@ import LogoImage from "./LogoImage";
 import { windowDimensionsActions } from "@/redux/globalVariables/windowDimensions";
 import { CloseIcon } from "./icons/SvgIconAssests";
 import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
-import FlightAvailability from "./FlightAvailability";
-import FoundNewFlights from "./FoundNewFlights";
-
+import FlightAvailability from "./FindFlights";
+import FoundNewFlightLists from "./FoundNewFlightLists";
 
 export default function FoundFlights(){
     const dispatch = useDispatch<AppDispatch>();
-    const { toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
-    const isYear = new Date().getFullYear();
-    const ref = useRef(false);
+   
     useEffect(() => {      
-        if (ref.current === false) {
-            dispatch(windowDimensionsActions());
-        }
-        return () => {
-            ref.current = true;
-        };
     }, [dispatch, status,ticketsDetails,errorMessage, loading]);
+
     return (  
        <div className={"min-h-full w-[100%] z-10"}>
            <section className="homeMenuWrap relative justify-end  
@@ -59,7 +51,7 @@ export default function FoundFlights(){
                                         <h1 className="font-thinbold text-blue-950
                                           text-[20px] sm:text-base md:text-base lg:text-[26px] xl:text-[26px] ml-1"
                                         >
-                                            Tui 4 U Book new Flight 
+                                            Tui 4 U Book new Flights
                                         </h1>  
                                     </div>
                                     <div className="relative right-
@@ -78,11 +70,11 @@ export default function FoundFlights(){
                                 </div>
                             </div>
                         </div>
-                        <div className="foundNewFlights relative  
+                        <div className="FoundNewFlightLists relative  
                          px-6 xl:px-8 2xl:px-8
                          "
                         >
-                         { loading && <FoundNewFlights/>}
+                         { loading && <FoundNewFlightLists/>}
                         </div>                        
                     </div>
               </div>

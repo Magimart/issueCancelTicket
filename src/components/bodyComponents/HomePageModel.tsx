@@ -1,12 +1,9 @@
 "use client"
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
-import Link from "next/link";
+import React from "react";
 import SideBarTicketLogin from "../headerComponents/SideBarTIcketLogin.tsx";
 import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
-import { getAllTicketAction, searchFlightAvailabilityAction } from "@/redux/ticketSlice/allTicketsActions";
-import FlightAvailability from "../headerComponents/FlightAvailability";
 
 const HomePageModel = () => {
 
@@ -21,7 +18,7 @@ const HomePageModel = () => {
     >  
        {/* canceltiket  amedues: 1053  */}
        {
-        isOpen && <SideBarTicketLogin />
+        isOpen && <SideBarTicketLogin/>
        }
                  
       {/*home component  */}
@@ -61,7 +58,7 @@ const HomePageModel = () => {
                         <button className="relative hover:bg-gradient-to-tr from-white via-transparent to-sky-400
                           hover:text-blue-950 top-[50px] py-1 px-4 rounded-2xl right-6 
                           hover:bg-transparent bg-red-600"
-                          onClick={()=>dispatch(toggleShowHideHomeMenuActions(isOpen))}
+                            onClick={()=>dispatch(toggleShowHideHomeMenuActions(isOpen))}
                           >
                             Continue with your Cancelations
                         </button>

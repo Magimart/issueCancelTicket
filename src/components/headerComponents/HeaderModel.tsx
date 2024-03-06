@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter, usePathname  } from 'next/navigation'
+import LoggedInUserSession from "./LoggedInUserSession";
 
 
 
@@ -13,7 +14,8 @@ export default function HeaderModel(){
   const dispatch = useDispatch<AppDispatch>();
   const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
   const {loading} = useSelector((state: RootState) => state.allTickets);
-
+  const {userSession} = useSelector((state: RootState) => state.authUsers);
+ const {userEmail, userName } = userSession;
   
   return (
         <div className="z-1 absolute top-0  left-0  
@@ -47,17 +49,14 @@ export default function HeaderModel(){
                   </div>
               </div>
               <div className="w-[50%] sm:w-[60%] md:w-[60%]  lg:w-[65h%]  xl:w-[70%] 2xl:w-[70%] h-full ">
-                 
-                 
                 <div className="homeTitleWraper h-full  relative  w-[100%]  flex  flex-row justify-center items-center">
-                  
                   <div className="flex flex-col w-max  justify-end items-center bg-blac">
                       <span
                         className="w-full flex justify-center font-bold text-base md:text-2xl lg:text-2xl xl:text-3xl xxl:text-3xl mt-2  
                           text-blue-950  md:inline-block"
                       >
                         Ticket Resolution Center
-                        <span className="mx-[5px]   "> 
+                        <span className="mx-[5px] "> 
                             4 You
                         </span>                    
                       </span>                           
@@ -65,9 +64,13 @@ export default function HeaderModel(){
 
               </div>                  
               </div>
+              <div className=" top-0 z-10 w-max text-base flex flex-row justify-end">               
+                   <div>
+                      <LoggedInUserSession/>
+                   </div>
+              </div>
             </div> 
-          </div> 
-                           
+          </div>                            
       </div>
   )
 

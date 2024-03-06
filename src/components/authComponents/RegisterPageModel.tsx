@@ -1,22 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 import React,{ChangeEvent, useEffect, useRef, useState} from "react";
-import { useRouter } from 'next/router'
+import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";  //____testing
-import Link from "next/link";
-// import { ButtonLoader } from "../commons-components/Loader";
 import {useSelector, useDispatch} from 'react-redux';
-// import { toast } from "react-toastify";
-import Image from 'next/image'
-import { addNewUserAction } from "@/redux/userSlice/allUserActions";
-import {  RootState } from "@/redux/store";
+import {  AppDispatch, RootState } from "@/redux/store";
+import { addNewUserAction } from "@/redux/userSlice/authUsersActions";
+
 
 const RegisterUserModel = () => {
 
-    const defaultImage = "https://res.cloudinary.com/magimaart/image/upload/v1641158222/portfolioApp/avatar/default-user-image_qump7g.png"
 
-    const dispatch = useDispatch();
-    // const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
+    const pathName = usePathname();
+    const router = useRouter();
+
 
     const [user, setUser] = useState({
           name:"",
@@ -25,26 +23,33 @@ const RegisterUserModel = () => {
           password:""
     });
     const [avatar, setAvatar]  = useState<string | any>('');
-    const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
-
-
+    const {loading, addNewUser} = useSelector((state: RootState) => state.authUsers);
+      const {registerStatus} = addNewUser;
+        console.log(addNewUser, pathName)
    
     useEffect(() => {
         //  if(success)  {
         //      router.push('/login')
-        // //  console.log(success)
+        // console.log(success)
         // }
         //   if(error)toast.error(error)
+        if(registerStatus && registerStatus === 200){
+            if(pathName === '/auth/register'){
+                console.log("function fired")
+                router.push(`${process.env.BASE_URL}/auth/login`); 
+            };
+            //eslse ==> redirect to user profile page___for later!
+        }else{
+          return;
+        }
 
-     }, [dispatch]);
+     }, [dispatch, pathName, router, registerStatus]);
 
     const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
         try { 
             const userData = { name:user.name, address:user.address, email: user.email, password:user.password}
-            //@ts-ignore
-             dispatch(addNewUserAction(userData))
-            
+             dispatch(addNewUserAction(userData));            
         }catch(err) { 
             console.error(err);
        }   
@@ -52,22 +57,21 @@ const RegisterUserModel = () => {
 
     const handleChange = (e:ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {   
         setUser({ ...user, [e.target.name]: e.target.value });   
-      };
+    };
       
-
     return (
         <>
-          <section 
-                className={`singlePageContainer  h-[100%] w-[100%]
-                bg-gradient-to-b from-sky-300 via-sky-300 to-transparent
+           <section 
+                className={`singlePageContainer mt-9  h-[100%] w-[100%]
+                 bg-gradient-to-b from-sky-300 via-sky-300 to-transparent
                 `}
             >
                 <motion.div className=" flex  justify-center
-                        sm:px-6 lg:px-8 
-                        relative 
-                        w-full
-                        h-[10em]
-                            "
+                    sm:px-6 lg:px-8 
+                    relative 
+                    w-full
+                    h-[10em]
+                    "
                     initial={{ 
                         height: "1%", 
                         opacity: 0, 

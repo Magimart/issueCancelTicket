@@ -7,26 +7,24 @@ import { getTicketDetailsAction, searchFlightAvailabilityAction } from "@/redux/
 import ErrorMessageToggle from "../sharedComponents/ErrorMessageToggle";
 import { motion } from "framer-motion";  //____testing
 import { IconImageLoader } from "../sharedComponents/forImageComponents/ContentLoader";
-import { getMonthYear } from "@/lib/utils/getDateTime";
+import { getMonthYear } from "@/lib/utils/helpers";
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 
 
-const FlightAvailability = ( ) => {
+const FindFlights = ( ) => {
     const [destination, setDestination] = useState<string>('');
     const [origin, setOrigin] = useState<string>('');
     const [departDate, setDepartDate] = useState<Date>(new Date());
     const [returnDate, setReturnDate] = useState<Date>(new Date());
- 
     const { errorMessageToggle} = useSelector((state: RootState) => state.toggleHomeMenu);
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const {loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
     const {loginStatus, loginOk } =loginStatusMsg;
     const router = useRouter();
-    const pathName = usePathname();
     const dispatch = useDispatch<AppDispatch>();
 
-    const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) => {         
+    const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) => {  // reuse this func       
         try{
             e.preventDefault();
               const data = {
@@ -164,6 +162,6 @@ const FlightAvailability = ( ) => {
    )
 }
 
-export default FlightAvailability;
+export default FindFlights;
 
 

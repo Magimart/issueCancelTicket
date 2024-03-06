@@ -1,14 +1,15 @@
 import { 
-   AuthLoginInitials, 
-  Credentials } from "@/lib/types/MyTypes";
+  UserAuthInitials, 
+  Credentials , UserSession, UserTokenObj} from "@/lib/types/MyTypes";
 import { createSlice , createAsyncThunk} from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import {signIn, getSession} from 'next-auth/react';
 
 
-const initialState:AuthLoginInitials = {
+const initialState:UserAuthInitials = {
     loading: false,
+
     loginStatusMsg :{         
         loginError: null,
         loginOk:false,
@@ -23,17 +24,23 @@ const initialState:AuthLoginInitials = {
       userName: "",
       userEmail: "",
       userRole: ""
+    },
+    addNewUser:{
+      name:"",
+      email: "",
+      password: "",  
+      role:"",
+      registerStatus:0,
+      createdAt: new Date(),
     }
 } ;
 
-export const LoginInUserActions = createAsyncThunk("loginUsers", async(credential:Credentials) => { 
+
+export const LoginInUserActions = createAsyncThunk("LoginInUserActions", async(credential:Credentials) => { 
   try {
     let {email, password } = credential;
     const token =   await axios.get(`${process.env.BASE_URL}/api/auth/csrf`);
-    console.log(token)
-
     let session :any  = await getSession() ; 
-
     const result : any = await signIn('credentials', {
       redirect: false,
       email,
@@ -56,7 +63,45 @@ export const LoginInUserActions = createAsyncThunk("loginUsers", async(credentia
         userEmail: session !== null && session.user.email, 
         userRole:session !== null && session.user.role
       }
-    } as AuthLoginInitials;
+    };
+    
+    return response;
+    
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+// new user
+//________________add new
+export const addNewUserAction = createAsyncThunk("addNewUserAction", async (data:any) => {
+  try {
+    const response = await axios.post(`${process.env.BASE_URL}/api/auth/register`, data);
+    let isData  = response;
+      console.log("you are registered", response);
+    return isData;
+  } catch (err) {
+    console.error(err)
+  }
+});
+
+// loggedin User Actions
+export const LoggedInUserAction = createAsyncThunk("LoggedInUserAction", async() => { 
+  try {
+    const token =   await axios.get(`${process.env.BASE_URL}/api/auth/csrf`);
+    let session : any = await getSession() ; 
+    const response = {
+      tokenObj:{
+        tokenStatus:token.status,
+        token:token.data.csrfToken
+      },
+      userSession: {
+        userId: session !== undefined && session.user._id, 
+        userName: session !== undefined && session.user.name, 
+        userEmail: session !== null && session.user.email, 
+        userRole:session !== null && session.user.role
+      } as UserSession
+    };
     
     return response;
     
@@ -73,6 +118,7 @@ const authUsersSlice = createSlice({
   },
     
   extraReducers: (builder) => {
+    // login
     builder.addCase(LoginInUserActions.fulfilled, (state, action: PayloadAction<any>) => {
       state.loading = false;
       console.log(action)
@@ -80,34 +126,95 @@ const authUsersSlice = createSlice({
       const {loginStatus,loginError,loginOk} = loginStatusMsg;
       const {tokenStatus, token} = tokenObj;
       const {userName, userEmail, userRole, userId } = userSession;
-      if(action.type === "loginUsers/fulfilled"){
-        if(loginOk && loginStatus === 200){
-          state.loading = true;
-          state.loginStatusMsg.loginOk = loginOk;
-          state.loginStatusMsg.loginStatus = loginStatus;
-          state.tokenObj.token = token
-          state.tokenObj.tokenStatus = tokenStatus;
-          state.userSession.userName = userName;
-          state.userSession.userEmail = userEmail;
-          state.userSession.userRole = userRole;
-          state.userSession.userId = userId;
-
-        }else{
-          state.loading = false;
-          state.loginStatusMsg.loginError = loginError;
-          state.loginStatusMsg.loginOk;
-          state.loginStatusMsg.loginStatus;
-          state.tokenObj.token = "" ;
-          state.tokenObj.tokenStatus = 0;
-          state.userSession.userName = "";
-          state.userSession.userEmail = "";
-          state.userSession.userId = "";
-        }
-      }return;          
+       try {
+        if(action.type === "LoginInUserActions/fulfilled"){
+          if(loginOk && loginStatus === 200){
+            state.loading = true;
+            state.loginStatusMsg.loginOk = loginOk;
+            state.loginStatusMsg.loginStatus = loginStatus;
+            state.tokenObj.token = token
+            state.tokenObj.tokenStatus = tokenStatus;
+            state.userSession.userName = userName;
+            state.userSession.userEmail = userEmail;
+            state.userSession.userRole = userRole;
+            state.userSession.userId = userId;
+  
+          }else{
+            state.loading = false;
+            state.loginStatusMsg.loginError = loginError;
+            state.loginStatusMsg.loginOk;
+            state.loginStatusMsg.loginStatus;
+            state.tokenObj.token = "" ;
+            state.tokenObj.tokenStatus = 0;
+            state.userSession.userName = "";
+            state.userSession.userEmail = "";
+            state.userSession.userId = "";
+          }
+        }return;  
+       } catch (error) {
+        console.log(error)
+       }        
     });  
     builder.addCase(LoginInUserActions.pending, (state, action: PayloadAction<any>) => {
       state.loading = true;
     });
+
+    //register user
+    builder.addCase(addNewUserAction.fulfilled, (state, action: PayloadAction<any>) => {
+        try {
+          if(action.type === "addNewUserAction/fulfilled"){
+            console.log(action)
+            const {name, email,password,role, createdAt } = action.payload.data;
+  
+            if(action.payload.status === 200){
+              state.loading = true;
+              state.addNewUser.registerStatus = 200;
+              state.addNewUser.name = name;
+              state.addNewUser.email = email;
+              //state.addNewUser.password = password; No password to the browser
+              state.addNewUser.role = role; 
+              state.addNewUser.createdAt = createdAt;             
+            }else{
+              state.loading = false;
+              state.addNewUser.registerStatus = 0;
+              state.addNewUser.name = "";
+              state.addNewUser.email = "";
+              state.addNewUser.createdAt
+            }
+          }
+          return;
+        } catch (error) {
+            console.log(error)
+        }
+    });  
+    builder.addCase(addNewUserAction.pending, (state, action: PayloadAction<any>) => {
+      state.loading = true;
+    });
+
+    // logged user
+    builder.addCase(LoggedInUserAction.fulfilled, (state, action: PayloadAction<any>) => {
+      try {
+         if(action.type === "LoggedInUserAction/fulfilled"){
+            const { tokenObj, userSession }= action.payload;
+            const {tokenStatus, token} = tokenObj;
+            const {userName, userEmail, userRole, userId } = userSession;
+            state.loading = true;
+            state.tokenObj.token = token;
+            state.userSession.userId = userId;
+            state.tokenObj.tokenStatus = tokenStatus;
+            state.userSession.userName = userName;
+            state.userSession.userEmail = userEmail;
+            state.userSession.userRole = userRole;        
+         }
+        return;
+      } catch (error) {
+          console.log(error)
+      }
+      });  
+
+      builder.addCase(LoggedInUserAction.pending, (state, action: PayloadAction<any>) => {
+        state.loading = true;
+      });
   }
 });
   

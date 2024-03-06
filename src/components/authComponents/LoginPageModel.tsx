@@ -7,23 +7,20 @@ import Link from "next/link";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginInUserActions } from "@/redux/userSlice/authUsersActions";
-import axios from "axios";
 import { Credentials } from "@/lib/types/MyTypes";
 import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
 
-
 const LoginModel = ( ) => {
-
    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
-    const { isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
+    const {isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
     const {loading,userSession, loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
     const {status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const {loginStatus, loginError, loginOk } =loginStatusMsg;
     
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const pathName = usePathname();
     const router  = useRouter();
 
@@ -33,20 +30,22 @@ const LoginModel = ( ) => {
             let credentials:Credentials = {
             email, password
             } 
-            //@ts-ignore
-            dispatch<AppDispatch>(LoginInUserActions(credentials));
+            dispatch(LoginInUserActions(credentials));
         }catch(err){
         console.log(err)
         }
     }   
-    
+    console.log(pathName)
     useEffect(() => {  
         if(loginOk && loginStatus === 200){
             if(pathName === '/'){
-                dispatch(toggleShowHideHomeMenuActions(isOpen));
+                console.log("this called at path", pathName)
                 router.push(`${process.env.BASE_URL}/tickets/ticket_details/${ticketsDetails._id}`); 
+                dispatch(toggleShowHideHomeMenuActions(isOpen));
+
+            }else{
+              router.push(`${process.env.BASE_URL}`);   //eslse ==> redirect to user page___for later!
             };
-            //eslse ==> redirect to user page___for later!
         }else{
           console.log(loginError)  // create component to display this error to user
         }

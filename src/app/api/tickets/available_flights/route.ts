@@ -20,29 +20,25 @@ export  async function POST(req: Request, res: Response) {
         } = search 
 
         // get flichts as per user query
-        const availableFlights:any = await axios.get(`https://api.travelpayouts.com/v1/prices/cheap?origin=${origin}&destination=${destination}&depart_date=${departDate}&return_date=${returnDate}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
-        .then(function(response){
-           return response.data;
-        }); 
-     
-        // recommended prices replace hardcoded values!!!
-        //const cheapestPrices:any = await axios.get(`https://api.travelpayouts.com/v1/prices/monthly?origin=BER&destination=DXB&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
+        const availableFlights:any = await fetch(`https://api.travelpayouts.com/v1/prices/cheap?origin=${origin}&destination=${destination}&depart_date=${departDate}&return_date=${returnDate}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
+        const available = await availableFlights.json();
+          
         const cheapestPrices:any = await axios.get(`https://api.travelpayouts.com/v1/prices/monthly?origin=${origin}&destination=${destination}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
         .then(function(response){
            return response.data;
         }); 
        
         let isObj = {
-          foundFlights: availableFlights,
+          foundFlights: available,
           recommendedPrices:cheapestPrices
         } as any;
 
         let response =  new NextResponse(JSON.stringify(isObj), {status:200});                   
-        res = response;
-        console.log(res)
+        res =  response;
+        //console.log(res)
         return res;  
       } catch (error) {
-          return new NextResponse("we are not able ti find flights at this time my you adjust your dates" + error, {status: 500})
+          return new NextResponse("we are not able t0 find flights at this time my you adjust your dates" + error, {status: 500})
       }
     };
   } catch (error) {
