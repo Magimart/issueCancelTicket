@@ -4,12 +4,15 @@ type ToggleProps = {
   isOpen: boolean;
   errorMessageToggle: boolean;
   toggleBooking: boolean;
+  toggleFoundFlights: boolean;
+
 };
 
 const initialState: ToggleProps = {
   isOpen: false,
   errorMessageToggle: false,
-  toggleBooking: false
+  toggleBooking: false,
+  toggleFoundFlights: false
 };
 
 
@@ -29,6 +32,10 @@ const toggleActions = createSlice({
     console.log(action)
     state.toggleBooking = !action.payload;
   },
+  toggleFoundFlightActions:(state, action)=>{
+    console.log(action)
+    state.toggleFoundFlights = !action.payload;
+  },
 
   },
 });
@@ -37,7 +44,8 @@ const toggleActions = createSlice({
 export const { 
   toggleShowHideHomeMenuActions,
   toggleErrorMessageActions,
-  toggleBookingInfoActions
+  toggleBookingInfoActions,
+  toggleFoundFlightActions
 } = toggleActions.actions;
 
 

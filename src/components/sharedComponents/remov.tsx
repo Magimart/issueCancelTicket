@@ -15,12 +15,13 @@ export default function ErrorMessageToggle(){
     const dispatch = useDispatch();
 
     const handleDispatch = () => {
+        console.log("clicked", errorMessage, " noth", loginError)
         if(errorMessage.length){
-            dispatch(clearErrorMessageActions(errorMessage));
-        }
-       if(loginStatus === 401){
-            dispatch(clearLoginErrorMessageActions(loginStatus));
-        }     
+            dispatch(clearLoginErrorMessageActions (errorMessage));
+        } 
+        // if(loginStatus === 401){
+        //     dispatch(clearLoginErrorMessageActions(loginStatus));
+        // }        
     }
 
   return (
@@ -32,7 +33,7 @@ export default function ErrorMessageToggle(){
         <button  className="closeErrorMessageWrapper relative"
           onClick={handleDispatch}
         >
-            ✖️
+          ✖️
         </button>
         </div> 
         <div className="relative">

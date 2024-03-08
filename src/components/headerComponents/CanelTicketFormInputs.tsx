@@ -21,6 +21,7 @@ const CancelTicketFormInput = ( ) => {
     const pathName = usePathname();
     const dispatch  = useDispatch();
 
+    console.log("üüüüüüüüüüüüüüüüüüüüü", errorMessage)
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) => {         
         try{
             e.preventDefault();
@@ -62,7 +63,7 @@ const CancelTicketFormInput = ( ) => {
                     transition: {
                     duration: 1,
                         scale: 5, 
-                            type: "tween", stiffness: -10 
+                        type: "tween", stiffness: -10 
                     } 
                 }
             } 

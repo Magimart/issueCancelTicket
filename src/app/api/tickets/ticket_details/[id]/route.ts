@@ -7,8 +7,8 @@ import type { TicketInitials } from '@/lib/types/MyTypes';
 export async function GET( request: Request,{ params }: { params: { id: string}}) {                       
     try {
         await dbConnect();
-        const safariDetails = await Ticket.findById(params.id);
-        let response = new NextResponse(JSON.stringify(safariDetails), {status:200}); 
+        const ticketDetails = await Ticket.findById(params.id);
+        let response = new NextResponse(JSON.stringify(ticketDetails), {status:200}); 
         return response;   
     } catch (error) {
         const errorMessage:string = "INVALID TICKET check your ticket please."
@@ -17,7 +17,7 @@ export async function GET( request: Request,{ params }: { params: { id: string}}
     }
 }
 
-
+// remove!!
 // update or change ticket details end point http://localhost:3000/api/tickets/ticket_details/:id
 export async function PATCH(req: Request, {params}: {params: {id: string}}) {
     

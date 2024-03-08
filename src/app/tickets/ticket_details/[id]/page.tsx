@@ -1,15 +1,18 @@
 "use client"
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import React, {useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import { useRouter } from 'next/router';
 import { getTicketDetailsAction } from "@/redux/ticketSlice/allTicketsActions";
 import { CalenderIcon, EditorIcon } from "@/components/headerComponents/icons/SvgIconAssests";
 import AdjustBookingInfo from "@/components/headerComponents/AdjustTicketDetails";
-import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
+import { toggleBookingInfoActions, toggleFoundFlightActions } from "@/redux/toggleSlice/toggleActions";
 import axios from "axios";
 import FoundFlights from "@/components/headerComponents/FoundFlights";
 import { LoggedInUserAction } from "@/redux/userSlice/authUsersActions";
+import { changeBookingActions } from "@/redux/ticketSlice/allBookingActions";
+import type { BookingInitials} from "@/lib/types/MyTypes";
+
 
 type Params = {
   params : {id: string}
@@ -18,45 +21,67 @@ type Params = {
 
 export default function TicketiDetailsPage({params : {id}}: Params) {
 
-  const {loading, ticketsDetails, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
+  const {loading, ticketsDetails,errorMessage, status, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
   const {userSession} = useSelector((state: RootState) => state.authUsers);
   const {userName} = userSession;
   const {toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);
   const {cheapRecommendedFlights, foundFlights} = foundNewFlights
+  const {toggleFoundFlights} = useSelector((state: RootState) => state.toggleHomeMenu);
+  const [userTicketId, setUserTicketId ] = useState<{user: string, ticket: Object}>({user: "", ticket: {}});
+  const {cancelStatus, cancelMessage} = useSelector((state: RootState) => state.allBooking);
+
+  console.log(errorMessage, status);
+
 
   const dispatch = useDispatch<AppDispatch>();
   const ref = useRef(false);
     const {
       _id,   
       airlineName, 
-      departure, departureTime, numberOfTravelers,destination,
-      arrivalTime, seatNumber, costPrice, ticketStatus, user,
+      departure, departureTime, numberOfTransfers,flightNumber,destination,
+      arrivalTime, costPrice, ticketStatus, user,
       createdAt 
     } = ticketsDetails;
+  
 
+    console.log(userTicketId)
+    const getId = () =>{
+      const cancelTicket = {
+        cancel: true,
+        user: userSession.userId,
+        ticketsDetails
+      } 
+      dispatch(changeBookingActions(cancelTicket))
+    }
 
     useEffect(() => {
       if (ref.current === false) {  
        dispatch(getTicketDetailsAction(id));
        dispatch(LoggedInUserAction());
       }
+
+      console.log(ticketsDetails)
+
       return () => {
         ref.current = true;
+        if(cheapRecommendedFlights && cheapRecommendedFlights.length){
+          dispatch(toggleFoundFlightActions(toggleFoundFlights))
+        }
       };
-    }, [dispatch, id, userName, loading, ticketsDetails]);
+    }, [dispatch,cheapRecommendedFlights, toggleFoundFlights, id, userName, loading, ticketsDetails]);
 
 
     return (
-      <main className={`singlePageWraper relative  p-0 m-0 h-full left-0  flex items-center  `}>
+      <main className={`singlePageWraper ${toggleBooking && toggleBooking?"fixed h-screen w-screen":"relative w-full h-auto"} "}  md:flex  overflow-hidden" -z-10x p-0 m-0  left-0  flex items-center  `}>
         
-        <div className="adjustBookingWrapper w-full !! flex flex-row justify-end top-0 right-0 absolute  ">
+        <div className="adjustBookingWrapper  w-full h-autog flex flex-row justify-end top-0 right-0 absolute  ">
           {
             toggleBooking && <AdjustBookingInfo/>
           }
         </div>
-        <div className="adjustBookingWrapper w-full !! flex flex-row justify-start top-0 left-0 absolute  ">
+        <div className={`adjustBookingWrapper absolute ${ cheapRecommendedFlights &&cheapRecommendedFlights.length? "w-[98vw] h-screen":""}  w-fullx !! flex flex-row justify-start top-0 left-0  `}>
           {
-            loading && cheapRecommendedFlights.length && <FoundFlights/>
+            toggleFoundFlights? <FoundFlights/>:""
           }
         </div>
 
@@ -72,15 +97,43 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
             <div className="relative -z-0 mt-16 w-full rounded-3xl ring-1 ring-red-600 
                sm:mt-20 
                bg-gradient-to-b from-transparent via-sky-50 to-sky-300
-
               "
             >
               <div className="relative  p-8 sm:p-10 ">
                 <h3 className="text-2xl font-bold tracking-tight text-blue-900">With Tui 4 U cancellations and adjustments are made with ease</h3>
                 <div className="relative  text-base flex flex-col space-x-4">
-                  <h4 className="mt-6 leading-7 text-gray-600">
-                      <span className="font-semibold">Booking Number</span>: {_id.toLocaleUpperCase()}
-                  </h4>
+                  <div className="mt-6 text-gray-600">
+                      <span className="font-semibold">Booking Number</span>:
+                       {_id.toLocaleUpperCase()} 
+                       {toggleFoundFlights} 
+                      {/*  RETRUN SUCCESS MSG TO USER */}
+                      {
+                        cancelStatus && cancelStatus === 200?(
+                          <button 
+                            onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
+                            className="mt-6 text-lg  text-white flex justify-center items-center bg-red-600 rounded-3xl
+                            leading-7"
+                          > 
+                            <span className="font-semibold mx-3">Book new flight</span> 
+                              <span
+                                className="bg-black- p-1 bg-opacity-20 rounded-lg hover:white cursor-pointer "
+                              >
+                                <CalenderIcon/>
+                            </span>
+                          </button> 
+                        ):(
+                          <button 
+                              onClick={() => getId()}
+                              className=" text-lg  text-white flexl justify-center items-center bg-red-600 rounded-3xl
+                              leading-7  px-4
+                              "
+                          >
+                            cancel flight                          
+                          </button> 
+                        )
+                      }
+                  </div>
+                    
                   <h4 className="mt-6  leading-7 text-gray-600">
                     <span className="font-semibold">Name</span>: {userName}
                   </h4>
@@ -106,17 +159,19 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
                     <span className="font-semibold">Airlines</span>: {airlineName}
                   </h4>
                 </div>
+
                 {/* row 2 */}
                 <div className="relative text-xs font-semibold flex flex-col space-x-4">
                   <h4 className="flex mt-6 items-center
                     leading-7 text-gray-600"
                   >                      
-                    <span className="pl-l"> Seat Number
+                    <span className="pl-l"> Seat Number 
                       <span className="font-normal">(s)</span>
                       </span >: <span className="flex flex-row">
 
-                      {
-                        seatNumber.map((el, i)=>{
+                      {/* {
+                        numberOfTransfers.
+                        map((el, i)=>{
                           return(
                             <span key={el}
                               className="relative flex flex-row">
@@ -126,33 +181,21 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
                             </span>
                           )
                         })
-                      }                        
+                      }                         */}
                       </span>
                   </h4>
                   <h4 className="mt-6 flex items-center
                     leading-7 text-gray-600"
                   >
                     <span className="font-semibold"> 
-                        Number of Travelers<span className="font-normal">(s)
+                        Number of Transfers<span className="font-normal">(s)
                     </span>
-                  </span>: {seatNumber.length}
-                  </h4>
-                  <h4 
-                    onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
-                    className="mt-6 text-lg  text-white flex justify-center items-center bg-red-600 rounded-3xl
-                    leading-7"
-                  > 
-                    <span className="font-semibold mx-3">Change Departure and Destination</span> 
-                      <span
-                        className="bg-black- p-1 bg-opacity-20 rounded-lg hover:white cursor-pointer "
-                      >
-                        <CalenderIcon/>
-                    </span>
+                  </span>: {numberOfTransfers}
                   </h4>
                 </div>
                 {/* row 3 */}
                 <div className="mt-10 flex items-center gap-x-4">
-                  <h4 className="flex-none text-sm font-semibold leading-6 ">
+                  <h4 className="flex-none text-blue-900 text-sm font-semibold leading-6 ">
                     What would you like to do?
                   </h4>
                   <div className="h-px flex-auto bg-red-400"></div>

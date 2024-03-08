@@ -12,6 +12,7 @@ export default function AdjustBookingInfo(){
     const dispatch = useDispatch<AppDispatch>();
     const { toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
+
     const isYear = new Date().getFullYear();
     const ref = useRef(false);
     
@@ -24,20 +25,21 @@ export default function AdjustBookingInfo(){
         };
     }, [dispatch, status,ticketsDetails,errorMessage, loading]);
     return (  
-       <div className={"h-[100vh] w-[100%] z-10"}>
-           <section className="homeMenuWrap relative justify-end  
+       <div className={"h-[100vh] w-[100%] z-1 !!"}>
+           <section className={`homeMenuWrap relativeü justify-end  
              flex flex-row h-full  bg-opacity-30 
              w-[100%]  
-             bg-red-500            
-            "
+             bg-red-500 
+              ${toggleBooking && toggleBooking?"fixed":"relative"}           
+            `}
            >  
                {/* menu items_______________ right
                */}
                 <div className="menuItemsWrap w-[50%]  md:w-[70%] lg:w-[50%] xl:w-[50%] 2xl:w-[50%]
                     bg-white
-                    bg-gradient-to-b from-transparent via-sky-50 to-sky-300 
-
-                ">
+                      bg-gradient-to-b from-transparent via-sky-50 to-sky-300 
+                   "
+                >
                     <div className="homeMenuWraper relative                  
                         min-h-[100%] w-full           
                         "
@@ -82,6 +84,7 @@ export default function AdjustBookingInfo(){
                                 </div>
                             </div>
                         </div>
+
                         {/* form */}
                         <div className="cancleTicketForm relative  
                          px-6 xl:px-8 2xl:px-8

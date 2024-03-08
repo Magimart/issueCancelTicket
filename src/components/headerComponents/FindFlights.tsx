@@ -10,6 +10,7 @@ import { IconImageLoader } from "../sharedComponents/forImageComponents/ContentL
 import { getMonthYear } from "@/lib/utils/helpers";
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
+import { toggleBookingInfoActions, toggleFoundFlightActions } from "@/redux/toggleSlice/toggleActions";
 
 
 const FindFlights = ( ) => {
@@ -18,9 +19,12 @@ const FindFlights = ( ) => {
     const [departDate, setDepartDate] = useState<Date>(new Date());
     const [returnDate, setReturnDate] = useState<Date>(new Date());
     const { errorMessageToggle} = useSelector((state: RootState) => state.toggleHomeMenu);
-    const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
+    const {loading, status, foundNewFlights,errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const {loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
     const {loginStatus, loginOk } =loginStatusMsg;
+    const {cheapRecommendedFlights, foundFlights} = foundNewFlights
+    const {toggleFoundFlights} = useSelector((state: RootState) => state.toggleHomeMenu);
+
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
@@ -35,13 +39,14 @@ const FindFlights = ( ) => {
                }
                dispatch(searchFlightAvailabilityAction(data));
                // clear fields  --!!!
+    
         }catch(err){
         console.log(err)
         }
     } 
 
     useEffect(() => {          
-    }, [router, errorMessage, status, loading, ticketsDetails, loginOk, loginStatus]);
+    }, [router, errorMessage,toggleFoundFlights, cheapRecommendedFlights,status, loading, ticketsDetails, loginOk, loginStatus]);
     
 
     return(
@@ -49,7 +54,9 @@ const FindFlights = ( ) => {
            className="cancelTicketWrapper 
               top-20 bg-transparent px-6 py-8  shadow-md text-black
               items-center
-              space-y-8 relative z-1
+              space-y-8 
+              relative
+              z-1
               bg-gradient-to-b from-transparent via-sky-50 to-sky-300  rounded-lg"
             initial={{ 
                 height: "1%", 
@@ -89,8 +96,7 @@ const FindFlights = ( ) => {
                         <h3 className="text-black font-bold text-lg py-2"  >Change Flight: 
                             {
                             // loading && loading?<IconImageLoader/>:""                 
-                            }
-                        
+                            }                        
                         </h3>
 
                         <label className=" text-md ">Departure</label>
@@ -141,7 +147,8 @@ const FindFlights = ( ) => {
                     </div>
                     <div>                        
                         <button
-                            type="submit" className={`group relative h-11 w-full
+                            type="submit" 
+                            className={`group relative h-11 w-full
                             flex justify-center py-2 px-4 border 
                             border-transparent text-xl font-medium rounded-3xl 
                             text-white 
@@ -152,6 +159,7 @@ const FindFlights = ( ) => {
                             ${errorMessage && errorMessage.length?'bg-opacity-20':'hover:bg-sky-400 hover:text-black text-gray-100  '}
                             `}
                             disabled={errorMessage && errorMessage.length?true:false}
+                            onClick={()=> dispatch(toggleFoundFlightActions(toggleFoundFlights))}
                         >
                             find flight
                         </button> 

@@ -4,35 +4,47 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import React, {useEffect, useRef } from "react";
 import { useRouter } from 'next/router';
-import { addBookingActions } from '@/redux/ticketSlice/allBookingActions';
-import moment from 'moment';
+import { bookSelectedFlightActions } from '@/redux/ticketSlice/allTicketsActions';
 import { getFullDayTime } from '@/lib/utils/helpers';
+import { CloseIcon } from './icons/SvgIconAssests';
+import { toggleFoundFlightActions } from '@/redux/toggleSlice/toggleActions';
+import type { FlightsInitials } from '@/lib/types/MyTypes';
 
 export default function FoundNewFlightLists(){
-
-    const {loading, ticketsDetails, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
+    const {loading, errorMessage, status, ticketsDetails, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
     const {userSession} = useSelector((state: RootState) => state.authUsers);
     const {cheapRecommendedFlights, foundFlights} = foundNewFlights;
-
+    const {toggleFoundFlights} = useSelector((state: RootState) => state.toggleHomeMenu);
+     console.log(errorMessage, status);
     const dispatch = useDispatch<AppDispatch>();
-    console.log("there are you you flights", foundFlights)
 
-     const getSelectedFlight = (newTicket)=>{
-             const newBooking ={
-                oldTicketId:ticketsDetails._id,
-                newTicket: newTicket
-             }
-            dispatch(addBookingActions(newBooking))
-     }
+    const bookSelectedFlight = (flight:FlightsInitials)=>{
+        const newBooking ={
+        user: userSession.userId,
+         flight 
+        }
+
+        console.log(newBooking)
+       dispatch(bookSelectedFlightActions(newBooking));
+    }
+
 
   return (
-           <div className="bg-red-600 relative  p-8 rounded-md min-h-screen  
+           <div className="bg-red-600 relative  p-10 rounded-md -top-4
                xl:min-w-[900px]  x2l:min-w-[900px]
+               flex-1 h-screen overflow-y-auto
            ">
                 <div className=" flex items-center justify-between pb-6">
-                    <div className="">
-                        <h2 className="text-blue-900 font-semibold">Found Flight</h2>
+                    <div className="flex flex-col">
+                        <h2 className="text-blue-900 font-semibold">Found Flights</h2>
                         <span className="text-xs"><span className="mr-1">{foundFlights !== null && foundFlights.length}</span>Found Flights</span>
+                    </div>
+                    <div className="bg-red-600 relative -left-5 -top-2">
+                        <button
+                          onClick={() => dispatch(toggleFoundFlightActions(toggleFoundFlights))}
+                          className="bg-sky-300 rounded-3xl fixed">
+                            <CloseIcon/>
+                        </button>
                     </div>
                 </div>
                 <div>
@@ -110,7 +122,7 @@ export default function FoundNewFlightLists(){
                                                             view details
                                                         </button>
                                                         <button 
-                                                            onClick={() => getSelectedFlight(el)}
+                                                            onClick={() => bookSelectedFlight(el)}
                                                             className="bg-red-600 hover:bg-sky-300 hover:text-black text-white m-1 rounded-2xl py px-2">
                                                             book flight
                                                         </button>
@@ -131,7 +143,7 @@ export default function FoundNewFlightLists(){
                                          </td>
                                     </tr>
                                     {
-                                       cheapRecommendedFlights && cheapRecommendedFlights.map((el:any, i)=>{
+                                       cheapRecommendedFlights && cheapRecommendedFlights.map((el, i)=>{
                                         return(
                                             <tr className=" p-5" key={i}>
                                             <td className="px-5 className=  border-b border-gray-200 bg-white text-sm">
@@ -169,7 +181,7 @@ export default function FoundNewFlightLists(){
                                                             view details
                                                         </button>
                                                         <button 
-                                                            onClick={() => getSelectedFlight(el)}
+                                                            onClick={() => bookSelectedFlight(el)}
                                                             className="bg-red-600 hover:bg-sky-300 hover:text-black text-white m-1 rounded-2xl py px-2">
                                                             book flight
                                                         </button>
@@ -186,7 +198,7 @@ export default function FoundNewFlightLists(){
                             {/* content impliment pagination
                             */}
                             <div
-                                className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                                className="px-5 relative -top-4 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
                                 <span className="text-xs xs:text-sm text-gray-900">
                                     Showing 1 to 4 of 50 Entries
                                 </span>

@@ -1,24 +1,27 @@
 import { createSlice , createAsyncThunk, current} from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { TicketInitials } from '@/lib/types/MyTypes';
+import { FlightsInitials, TicketInitials, ResponseI } from '@/lib/types/MyTypes';
 import { AppDispatch, RootState } from "@/redux/store";
 import { getArray } from "@/lib/utils/helpers";
 
   interface IState{
     loading: boolean;
     errorMessage: string;
+    errorTrigger: string;
     status: number;
     allTickets: object[];
     ticketsDetails: TicketInitials;
     foundNewFlights: {
-       foundFlights: any[];
-       cheapRecommendedFlights:  any[] 
-    }
+      foundFlights: FlightsInitials[];
+      cheapRecommendedFlights:  FlightsInitials[];
+    },
+    addTicket:object;  
   }
 
   const initialState:IState = {
     loading: false,
+    errorTrigger:"",
     status: 0,
     errorMessage:"",
     allTickets: [],
@@ -27,10 +30,10 @@ import { getArray } from "@/lib/utils/helpers";
       airlineName: "",
       departure: "",
       destination: "",
-      arrivalTime: new Date(),
-      departureTime: new Date(),
-      numberOfTravelers: 0,
-      seatNumber: [],
+      arrivalTime: new Date,
+      departureTime: new Date,
+      numberOfTransfers:0,
+      flightNumber:0,
       costPrice: {
         price: 0,
         currency: ""
@@ -43,13 +46,15 @@ import { getArray } from "@/lib/utils/helpers";
         },
         isTicketBooked: false
       },
-      
-      createdAt: new Date(),
+      expiresAt: new Date,
+      createdAt: new Date,
     } ,
     foundNewFlights: {
       foundFlights: [],
       cheapRecommendedFlights: []
-    }
+    },
+    addTicket:{} 
+
   } 
 
 
@@ -70,15 +75,6 @@ export const getTicketDetailsAction = createAsyncThunk("getTicketDetails", async
   } 
 });
 
-export const addNewSafarisAction = createAsyncThunk("addNewTicketAction", async (data:any) => {
-  try {
-    const response = await axios.post(`${process.env.BASE_URL}/api/tickets`, data);
-    const isData  = await response.data;
-    return isData;
-  } catch (err) {
-    console.error(err)
-  }
-});
 
 export const searchFlightAvailabilityAction = createAsyncThunk("searchFlights", async(data:any) => {
   
@@ -93,6 +89,19 @@ export const searchFlightAvailabilityAction = createAsyncThunk("searchFlights", 
 });
 
 
+//add ticket
+export const bookSelectedFlightActions = createAsyncThunk("bookSelectedFlightActions", async (data:any):Promise<object | ResponseI> => {
+  try {
+     const response = await axios.post(`${process.env.BASE_URL}/api/tickets`, data);
+     const isData  = await response;
+           console.log(isData);
+     return isData;
+  } catch (err) {
+    console.error(err)
+    return err as ResponseI;
+  }
+});
+
 const ticketSlice = createSlice({
   name: "tickets",
   initialState,
@@ -100,6 +109,7 @@ const ticketSlice = createSlice({
     clearErrorMessageActions:(state, action)=>{
       let errMsg = action.payload
       errMsg = ""
+      console.log(action)
       state.errorMessage = errMsg;
     },
   },
@@ -170,6 +180,31 @@ const ticketSlice = createSlice({
     });  
     builder.addCase(searchFlightAvailabilityAction.pending, (state, action: PayloadAction<any>) => {
       state.loading = true;
+    });
+
+    // add ticket
+    builder.addCase(bookSelectedFlightActions.fulfilled, (state, action: PayloadAction<any>) => {
+        console.log("add select booking ==>", action)
+        if(action.type === 'bookSelectedFlightActions/fulfilled'){
+
+          const {status, data} = action.payload
+          if(status === 200){
+            state.loading = true;
+          }else{
+
+            console.log(action)
+            const {status, data} = action.payload.response;
+            const {error, message} = data;
+            state.status = status;
+            state.loading = false;
+            state.errorMessage = message;
+            state.errorTrigger = error;           
+          }
+        }
+      return;
+   });  
+    builder.addCase(bookSelectedFlightActions.pending, (state, action: PayloadAction<any>) => {
+     state.loading = true;
     });
 
    }

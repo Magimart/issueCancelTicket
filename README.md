@@ -15,16 +15,15 @@ if I made changes in the app I will doccument them here on this link.
 
 ```bash
 Booking or Ticket Number: user one of this ticket numbers in the Ticket Number UI
- 65de530a3e76ff8e41047e54
- 65ddf234813d78ba4e3269ee
- 65ddf2ab813d78ba4e3269f0
+65eb97954867f9d3de6dd78f
+65eb8ace3e8f9128aa96f33c
 
 User Credentials i.e email  and password:
 You can use any of the emails below with same password for both
-Email: fel@gmail.com , valn@gmail.com
+Email: fel@gmail.com, valn@gmail.com
 Password: 123456
-
 ```
+
 # Note: You can also register as a user by creating an account.
 - Register link: https://issue-cancel-ticket-tui.vercel.app/auth/register
 - The app will then ask you to login Imediately after successful registration

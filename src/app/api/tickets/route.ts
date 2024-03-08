@@ -2,6 +2,8 @@ import dbConnect from '@/lib/dbConnect';
 import { NextResponse, } from 'next/server';
 import Ticket from "@/models/ticketModel";
 import axios from 'axios';
+import { getFullDayTime } from '@/lib/utils/helpers';
+import { TicketInitials } from '@/lib/types/MyTypes';
 
 export  async function GET(req: Request, res: Response) {
 
@@ -39,51 +41,61 @@ export  async function POST(req: Request, res: Response) {
       
     if(method !== "POST") {return}else{
       try {
-
+        
         let defaultCancellation: string = "default"
         let cancellationDefaultDate: any = Date.now()
-
         const formdata= await req.json();
-       console.log(formdata)
-        const {   
-            airlineName, 
-            departure, departureTime, numberOfTravelers,destination,
-            arrivalTime,seatNumber, costPrice, ticketStatus, user,
-            createdAt 
-        } = formdata as any; 
-  
-        const {canclellation, isTicketBooked} = ticketStatus;
-        const {cancellationState, reasons, canclellationDate } = canclellation;
-         const { price, currency } = costPrice;
+        const loggedUser = formdata.user;
+
+        const {
+          origin, airline,price, departure_at, return_at,
+           expires_at, destination, flight_number, transfers
+        } = formdata.flight;
+ 
+        let defaultTicketStatus = {
+          canclellation: {
+            canclellationDate: new Date,
+            cancellationState : false,
+            reasons: "unknown reasons"   // change at enum
+          },
+          isTicketBooked: false
+        }
+        let defaultPrice = {
+          price: price, currency :"USD"
+        }
 
         const ticket = await new Ticket({
-          airlineName, 
-          departure,
-          destination,
-          departureTime:Date.now(),
-          arrivalTime:Date.now(),
-          seatNumber,
-          numberOfTravelers,
-          costPrice: { price, currency },
-          ticketStatus: {
-            canclellation: {
-              canclellationDate: cancellationDefaultDate,
-              cancellationState,
-              reasons:defaultCancellation
-            },
-            isTicketBooked: false
-          },
-          user: [],
-          createdAt: Date.now()          
-        });
+          airlineName: await airline,
+          departure: await origin,
+          destination:destination,
+          departureTime: departure_at,
+          arrivalTime : getFullDayTime( await return_at),
+          numberOfTransfers: transfers,
+          flightNumber: flight_number,
+          costPrice: defaultPrice,
+          ticketStatus: defaultTicketStatus,
+          expiresAt: expires_at,
+          user: loggedUser,
+          createdAt: getFullDayTime(new Date)
+      } as object as TicketInitials );
 
-        const res = await ticket.save();
-        let response = new NextResponse(JSON.stringify(res), {status:200}); 
+
+        //const res = await ticket.save();
+        const bookeFlight = {
+           res: await ticket.save(),
+           message: "Your flight has been successfull booked"
+        }
+
+        let response = new NextResponse(JSON.stringify(bookeFlight), {status:200}); 
         
         return response;
           
       } catch (error) {
-          return new NextResponse("Sory were were unable to save your ticket, try again" + error, {status: 500})
+          let errorMsg = {
+              error,
+            message:"Sory we are unable to book your flight, Please try again."
+          }
+        return new NextResponse(JSON.stringify(errorMsg), {status: 500})
       }
     };
   } catch (error) {

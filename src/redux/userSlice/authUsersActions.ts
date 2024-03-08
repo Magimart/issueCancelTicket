@@ -9,7 +9,6 @@ import {signIn, getSession} from 'next-auth/react';
 
 const initialState:UserAuthInitials = {
     loading: false,
-
     loginStatusMsg :{         
         loginError: null,
         loginOk:false,
@@ -37,21 +36,25 @@ const initialState:UserAuthInitials = {
 
 
 export const LoginInUserActions = createAsyncThunk("LoginInUserActions", async(credential:Credentials) => { 
+ 
+  let {email, password } = credential;
+  let result : any = await signIn('credentials', {
+    redirect: false,
+    email,
+    password
+  });
   try {
-    let {email, password } = credential;
-    const token =   await axios.get(`${process.env.BASE_URL}/api/auth/csrf`);
-    let session :any  = await getSession() ; 
-    const result : any = await signIn('credentials', {
-      redirect: false,
-      email,
-      password
-    });
+    const token =  await axios.get(`${process.env.BASE_URL}/api/auth/csrf`);
+    let session :any  = await getSession() ;
 
+    console.log("this results", result);
+    
     const response = {
       loginStatusMsg:{
         loginStatus:result.status,
         loginError: result.error,
-        loginOk:result.ok
+        loginOk:result.ok,
+        errorCause: ""
       },
       tokenObj:{
         tokenStatus:token.status,
@@ -68,7 +71,27 @@ export const LoginInUserActions = createAsyncThunk("LoginInUserActions", async(c
     return response;
     
   } catch (error) {
-    console.log(error)
+    console.log("this is login  ==>", error)
+    const response ={
+      loginStatusMsg:{
+        loginStatus:result.status,
+        loginError: result.error,
+        loginOk:result.ok,
+        errorCause: error
+      },
+      tokenObj:{
+        tokenStatus:"",
+        token:""
+      },
+      userSession: {
+        userId: "", 
+        userName: "", 
+        userEmail: "", 
+        userRole:""
+      }
+    }
+    return response;
+
   }
 });
 
@@ -115,13 +138,16 @@ const authUsersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
+    clearLoginErrorMessageActions:(state, action)=>{
+      console.log(action)
+      state.loginStatusMsg.loginStatus = 0;
+    },
   },
     
   extraReducers: (builder) => {
     // login
     builder.addCase(LoginInUserActions.fulfilled, (state, action: PayloadAction<any>) => {
       state.loading = false;
-      console.log(action)
       const {loginStatusMsg,userSession, tokenObj} = action.payload;
       const {loginStatus,loginError,loginOk} = loginStatusMsg;
       const {tokenStatus, token} = tokenObj;
@@ -137,13 +163,12 @@ const authUsersSlice = createSlice({
             state.userSession.userName = userName;
             state.userSession.userEmail = userEmail;
             state.userSession.userRole = userRole;
-            state.userSession.userId = userId;
-  
+            state.userSession.userId = userId;  
           }else{
             state.loading = false;
             state.loginStatusMsg.loginError = loginError;
-            state.loginStatusMsg.loginOk;
-            state.loginStatusMsg.loginStatus;
+            state.loginStatusMsg.loginOk = loginOk ;
+            state.loginStatusMsg.loginStatus = loginStatus;
             state.tokenObj.token = "" ;
             state.tokenObj.tokenStatus = 0;
             state.userSession.userName = "";
@@ -210,15 +235,16 @@ const authUsersSlice = createSlice({
       } catch (error) {
           console.log(error)
       }
-      });  
+    });  
 
-      builder.addCase(LoggedInUserAction.pending, (state, action: PayloadAction<any>) => {
-        state.loading = true;
-      });
+    builder.addCase(LoggedInUserAction.pending, (state, action: PayloadAction<any>) => {
+      state.loading = true;
+    });
   }
 });
   
 export const { 
+  clearLoginErrorMessageActions
 }  = authUsersSlice.actions;
   
 export default authUsersSlice.reducer;

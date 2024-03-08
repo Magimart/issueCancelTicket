@@ -10,7 +10,7 @@ const BookingSchema = new Schema({
      },
     numberOfTravelers: {
         type: Number, 
-        required: true,
+        required: false,
     },
     seatNumber: {
         type: Array, 

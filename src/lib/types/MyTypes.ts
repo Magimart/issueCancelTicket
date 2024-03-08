@@ -1,3 +1,26 @@
+export interface Ids {
+    user: string, ticket: Object
+  }
+
+  export interface ResponseI {
+    response:{
+      status: number;
+      data: object
+    }
+  }
+
+export interface FlightsInitials {
+    airline:string;
+    departure_at:Date;
+    destination: string;
+    expires_at:Date;
+    flight_number:number;
+    origin:string;
+    price:number;
+    return_at:Date;
+    transfers:number;
+    }
+
 export interface TicketInitials {
     _id: string
     airlineName: string,  
@@ -5,8 +28,8 @@ export interface TicketInitials {
     destination: String,
     arrivalTime: Date,
     departureTime: Date
-    numberOfTravelers:number,
-    seatNumber:string[],
+    numberOfTransfers:number, 
+    flightNumber:number, 
     costPrice: {
         price: number,
         currency:string
@@ -19,9 +42,17 @@ export interface TicketInitials {
         },
         isTicketBooked:false  
     },
-    user?: [], 
+
+    user?: [],    // remove optional
+    expiresAt:Date
     createdAt:Date 
 }
+
+export interface CancelTicket {
+    cancel:boolean;
+    user:string;
+    ticketsDetails:TicketInitials;
+ }
 
 export interface BookingInitials{
     bookingName: string;

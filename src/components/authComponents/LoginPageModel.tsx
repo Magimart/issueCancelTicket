@@ -35,7 +35,8 @@ const LoginModel = ( ) => {
         console.log(err)
         }
     }   
-    console.log(pathName)
+
+
     useEffect(() => {  
         if(loginOk && loginStatus === 200){
             if(pathName === '/'){
@@ -47,7 +48,7 @@ const LoginModel = ( ) => {
               router.push(`${process.env.BASE_URL}`);   //eslse ==> redirect to user page___for later!
             };
         }else{
-          console.log(loginError)  // create component to display this error to user
+          console.log(" this login error ==>",loginStatus, "login error", loginError)  // create component to display this error to user
         }
     }, [router, pathName, loginError, loading, loginOk, loginStatus, dispatch, isOpen, ticketsDetails._id]);
     

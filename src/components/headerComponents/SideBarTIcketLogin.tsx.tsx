@@ -8,6 +8,7 @@ import CancelTicketFormInput from "./CanelTicketFormInputs";
 import LoginPage from "@/app/auth/login/page";
 import { CloseIcon } from "./icons/SvgIconAssests";
 import { getAllTicketAction } from "@/redux/ticketSlice/allTicketsActions";
+import ErrorMessageToggle from "../sharedComponents/ErrorMessageToggle";
 
 
 
@@ -17,20 +18,18 @@ export default function SideBarTicketLogin(){
     const {toggleBooking} = useSelector((state: RootState) => state.toggleHomeMenu);  
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const {isOpen} = useSelector((state: RootState) => state.toggleHomeMenu);
-
+    const {userSession, loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
+    const {loginStatus, loginError, loginOk } = loginStatusMsg;
     const isYear = new Date().getFullYear();
-
     const ref = useRef(false);
        useEffect(() => {      
             if (ref.current === false) {
-                dispatch(windowDimensionsActions());
+              dispatch(windowDimensionsActions());
             }
-        
             return () => {
               ref.current = true;
             };
         }, [dispatch, status,ticketsDetails,errorMessage, loading]);
-
 
     return (  
        <div className={"h-[100%] w-[100%] z-5"}>
@@ -90,6 +89,12 @@ export default function SideBarTicketLogin(){
                          px-6 xl:px-8 2xl:px-8
                          "
                         >
+                        <div className="absolute z-3 top-4"> 
+                        {
+                            loginStatus && loginStatus === 401? <ErrorMessageToggle/> :""
+                        }             
+                        </div>
+
                           {status === 200? <LoginPage/>: <CancelTicketFormInput/>}
                         </div>
                         {/* siderbar footer */}

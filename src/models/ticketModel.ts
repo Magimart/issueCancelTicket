@@ -2,18 +2,35 @@ import mongoose from 'mongoose'
 import { Schema, Types } from 'mongoose';
 import { TicketInitials } from '@/lib/types/MyTypes';
 
+
+
 const TicketSchema = new Schema({
-    airlineName: String,
-    departure: String,
-    destination: String,
-    departureTime:Date,
-    arrivalTime:Date,
-    numberOfTravelers: {
+    airlineName: {
+        type: String, 
+        required: true,
+    },
+    departure: {
+        type: String, 
+        required: true,
+    },
+    destination: {
+        type: String, 
+        required: true,
+    },
+    departureTime:{
+        type: Date, 
+        required: true,
+    },
+    arrivalTime:{
+        type: Date, 
+        required: true,
+    },
+    numberOfTransfers: {  
         type: Number, 
         required: true,
     },
-    seatNumber: {
-        type: Array, 
+    flightNumber: {
+        type: Number, 
         required: false,
      },
     costPrice: {
@@ -39,7 +56,7 @@ const TicketSchema = new Schema({
                 enum: {
                     values: [
                         'default',
-                        'no reasons',
+                        'unknown reasons',
                         'am sick and can not travel',
                         'my flight is delayed',
                         'over booking',
@@ -55,11 +72,15 @@ const TicketSchema = new Schema({
         }
     },
     user: [
-    //     { 
-    //   type: Schema.Types.ObjectId,
-    //   ref: "User"
-    // }
+        { 
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
     ], 
+    expiresAt: {
+        type: Date,
+        default: Date.now
+    },
     createdAt: {
         type: Date,
         default: Date.now

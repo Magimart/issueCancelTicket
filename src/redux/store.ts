@@ -6,6 +6,7 @@ import globalVariableSliceReducer from "./globalVariables/globalVariableSlice";
 import windowDimensionsSliceReducer from "./globalVariables/windowDimensions"
 import userUSerSliceReducer  from "./userSlice/allUserActions";
 import useAuthUsersSliceReducer  from "./userSlice/authUsersActions";
+import useBookingSliceReducer  from "@/redux/ticketSlice/allBookingActions";
 
 
 
@@ -17,7 +18,9 @@ export function makeStore() {
       toggleHomeMenu: toggleActionsReducer,
       allTickets: useTicketSliceReducer,
       allUsers: userUSerSliceReducer ,    
-      authUsers: useAuthUsersSliceReducer ,    
+      authUsers: useAuthUsersSliceReducer, 
+      allBooking: useBookingSliceReducer    
+   
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
       serializableCheck: false,

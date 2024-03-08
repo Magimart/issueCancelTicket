@@ -8,10 +8,13 @@ import { toggleBookingInfoActions } from "@/redux/toggleSlice/toggleActions";
 import FlightAvailability from "./FindFlights";
 import FoundNewFlightLists from "./FoundNewFlightLists";
 
+
+
 export default function FoundFlights(){
     const dispatch = useDispatch<AppDispatch>();
     const {loading, status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
-   
+    const {toggleFoundFlights} = useSelector((state: RootState) => state.toggleHomeMenu);
+
     useEffect(() => {      
     }, [dispatch, status,ticketsDetails,errorMessage, loading]);
 
@@ -74,7 +77,7 @@ export default function FoundFlights(){
                          px-6 xl:px-8 2xl:px-8
                          "
                         >
-                         { loading && <FoundNewFlightLists/>}
+                          <FoundNewFlightLists/>
                         </div>                        
                     </div>
               </div>
