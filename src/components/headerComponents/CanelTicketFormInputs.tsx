@@ -19,15 +19,13 @@ const CancelTicketFormInput = ( ) => {
     const {loginStatus, loginOk } =loginStatusMsg;
     const router = useRouter();
     const pathName = usePathname();
-    const dispatch  = useDispatch();
+    const dispatch  = useDispatch<AppDispatch>();
 
-    console.log("üüüüüüüüüüüüüüüüüüüüü", errorMessage)
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) => {         
         try{
             e.preventDefault();
             if(typeof ticket === 'string'){
-              setFetch(true);
-              //@ts-ignore
+              setFetch(true);              
               dispatch(getTicketDetailsAction(ticket));
               setTicket("");
             }return;          

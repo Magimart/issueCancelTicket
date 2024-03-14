@@ -1,7 +1,7 @@
 import dbConnect from '@/lib/dbConnect';
 import { NextResponse, } from 'next/server';
 import axios from 'axios';
-import Booking from '@/models/flightBookingModel';
+import Booking from '@/models/bookingOrderModel';
 import Ticket from "@/models/ticketModel";
 import type { TicketInitials, Ids } from '@/lib/types/MyTypes';
 import moment from 'moment';
@@ -33,57 +33,60 @@ export  async function GET(req: Request, res: Response) {
 
 }
 
-// cancel
+// cancel move to Tickets CRUD!!
 export async function PATCH(req: Request, res: Response) {
     
   try {
      await dbConnect()
      if(req.method !== "PATCH")return; 
      else { 
-          try {  
-              const reqIds  = await req.json();
-              let cancellationDefaultDate: any = Date.now()
-              const cancel = reqIds.cancel;
-              const ticketDetails = reqIds.ticketsDetails;
-              const userId= reqIds.user;
-              let {
-                  airlineName, _id,
-                   destination, departure, departureTime,seatNumber, numberOfTravelers, 
-                  arrivalTime, costPrice, ticketStatus, user, createdAt                      
-              } = ticketDetails;
-              let doc = await Ticket.findOneAndUpdate({_id}, {
-                  $set: {
-                      airlineName,
-                      departure, 
-                      destination,
-                      departureTime, 
-                      arrivalTime, 
-                      seatNumber,
-                      numberOfTravelers,
-                      "costPrice.price": costPrice !== undefined && costPrice.price,
-                      "costPrice.currency": costPrice !== undefined && costPrice.currency,
-                      "ticketStatus.canclellation.canclellationDate": ticketStatus !== undefined && getFullDayTime(cancellationDefaultDate),  
-                       "ticketStatus.canclellation.cancellationState":ticketStatus.canclellation.cancellationState = cancel?true:false,
-                      "ticketStatus.canclellation.reasons":ticketStatus !== undefined && ticketStatus.canclellation.reasons,
-                      user:userId,                      
-                      createdAt
-                  } as unknown as TicketInitials,
-              },
-              {
-               upsert: true,
-                returnDocument: 'after',
-              },
-              );
-  
-            let response = new NextResponse(JSON.stringify(doc), {status:200});            
-            return response;  
-          } catch (error) {
-             let errorMsg = {
-                 error,
-                message:"We are unable to cancel Ticket, please try again."
-             }
-            return new NextResponse(JSON.stringify(errorMsg), {status: 500})
+        try {  
+            const reqIds  = await req.json();
+            let cancellationDefaultDate: any = Date.now()
+            const cancel = reqIds.cancel;
+            const ticketDetails = reqIds.ticketsDetails;
+            const userId= reqIds.user;
+            let {
+                airlineName, _id,
+                  destination, departure, departureTime,seatNumber, numberOfTravelers, 
+                arrivalTime, costPrice, ticketStatus, user, createdAt                      
+            } = ticketDetails;
+            let doc:TicketInitials = await Ticket.findOneAndUpdate({_id}, {
+                $set: {
+                    airlineName,
+                    departure, 
+                    destination,
+                    departureTime, 
+                    arrivalTime, 
+                    seatNumber,
+                    numberOfTravelers,
+                    "costPrice.price": costPrice !== undefined && costPrice.price,
+                    "costPrice.currency": costPrice !== undefined && costPrice.currency,
+                    "ticketStatus.canclellation.canclellationDate": ticketStatus !== undefined && getFullDayTime(cancellationDefaultDate),  
+                      "ticketStatus.canclellation.cancellationState":ticketStatus.canclellation.cancellationState = cancel?true:false,
+                    "ticketStatus.canclellation.reasons":ticketStatus !== undefined && ticketStatus.canclellation.reasons,
+                    user:userId,                      
+                    createdAt
+                } ,
+            },
+            {
+              upsert: true,
+              returnDocument: 'after',
+            },
+            );
+          const resObj = {
+             ticket: doc,
+             message: "You successfully cancelled your Ticket"
           }
+          let response = new NextResponse(JSON.stringify(resObj), {status:200});            
+          return response;  
+        } catch (error) {
+            let errorMsg = {
+                error,
+              message:"We are unable to cancel Ticket, please try again."
+            }
+          return new NextResponse(JSON.stringify(errorMsg), {status: 500})
+        }
      };
   } catch (error) {
       console.log(error)

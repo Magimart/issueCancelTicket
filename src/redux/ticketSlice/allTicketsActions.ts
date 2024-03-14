@@ -10,19 +10,21 @@ import { getArray } from "@/lib/utils/helpers";
     errorMessage: string;
     errorTrigger: string;
     status: number;
+    selectedFlight: boolean;
     allTickets: object[];
     ticketsDetails: TicketInitials;
     foundNewFlights: {
       foundFlights: FlightsInitials[];
       cheapRecommendedFlights:  FlightsInitials[];
     },
-    addTicket:object;  
+    //addTicket:object;  
   }
 
   const initialState:IState = {
     loading: false,
     errorTrigger:"",
     status: 0,
+    selectedFlight: false,
     errorMessage:"",
     allTickets: [],
     ticketsDetails: {
@@ -40,12 +42,13 @@ import { getArray } from "@/lib/utils/helpers";
       },
       ticketStatus: {
         canclellation: {
-          canclellationDate: "",
+          canclellationDate: new Date, // from str
           cancellationState: false,
           reasons: ""
         },
         isTicketBooked: false
       },
+      user:[],
       expiresAt: new Date,
       createdAt: new Date,
     } ,
@@ -53,7 +56,7 @@ import { getArray } from "@/lib/utils/helpers";
       foundFlights: [],
       cheapRecommendedFlights: []
     },
-    addTicket:{} 
+    //addTicket:{} 
 
   } 
 
@@ -64,10 +67,13 @@ const response = await axios(`${process.env.BASE_URL}/api/tickets`);
 });
 
 export const getTicketDetailsAction = createAsyncThunk("getTicketDetails", async (id:string) => { 
+  console.log(id)
   try {
-    console.log("there is full url  ==> ", `${process.env.BASE_URL}/api/tickets/ticket_details/${id}`)
-    const response = await axios(`${process.env.BASE_URL}/api/tickets/ticket_details/${id}`);  
+
+    const response = await axios(`${process.env.BASE_URL}/api/tickets/ticket_details/${id}`); 
+
     console.log(" here is my response  ",  response)
+
     return response; 
   } catch (error) {    
     const response = error;     
@@ -90,7 +96,7 @@ export const searchFlightAvailabilityAction = createAsyncThunk("searchFlights", 
 
 
 //add ticket
-export const bookSelectedFlightActions = createAsyncThunk("bookSelectedFlightActions", async (data:any):Promise<object | ResponseI> => {
+export const addSelectedFlightActions = createAsyncThunk("addSelectedFlightActions", async (data:any):Promise<object | ResponseI> => {
   try {
      const response = await axios.post(`${process.env.BASE_URL}/api/tickets`, data);
      const isData  = await response;
@@ -112,6 +118,12 @@ const ticketSlice = createSlice({
       console.log(action)
       state.errorMessage = errMsg;
     },
+    resetStatusActions:(state, action)=>{
+      let status = action.payload;
+      status = 0;
+      state.status = status;
+      state.selectedFlight = false;
+    },
   },
     
   extraReducers: (builder) => {
@@ -129,6 +141,7 @@ const ticketSlice = createSlice({
     // Ticket details builder
     builder.addCase(getTicketDetailsAction.fulfilled, (state, action:PayloadAction<any> ) => {
       if(action.type === "getTicketDetails/fulfilled"){
+        console.log(action)
         try {            
             if(action.payload === undefined || action.payload === null){
               state.ticketsDetails;  
@@ -183,27 +196,32 @@ const ticketSlice = createSlice({
     });
 
     // add ticket
-    builder.addCase(bookSelectedFlightActions.fulfilled, (state, action: PayloadAction<any>) => {
+    builder.addCase(addSelectedFlightActions.fulfilled, (state, action: PayloadAction<any>) => {
         console.log("add select booking ==>", action)
-        if(action.type === 'bookSelectedFlightActions/fulfilled'){
+        if(action.type === 'addSelectedFlightActions/fulfilled'){
+
+          console.log(" if this act true create booking ==>", action)
 
           const {status, data} = action.payload
           if(status === 200){
             state.loading = true;
+            state.status = status;
+            state.selectedFlight = true
+            state.ticketsDetails = data && data.res;
           }else{
-
             console.log(action)
             const {status, data} = action.payload.response;
             const {error, message} = data;
             state.status = status;
             state.loading = false;
+            state.selectedFlight = false;
             state.errorMessage = message;
             state.errorTrigger = error;           
           }
         }
       return;
    });  
-    builder.addCase(bookSelectedFlightActions.pending, (state, action: PayloadAction<any>) => {
+    builder.addCase(addSelectedFlightActions.pending, (state, action: PayloadAction<any>) => {
      state.loading = true;
     });
 
@@ -211,10 +229,11 @@ const ticketSlice = createSlice({
 });
   
 
-export const { clearErrorMessageActions}  = ticketSlice.actions;  
+export const { 
+  clearErrorMessageActions,
+  resetStatusActions
+}  = ticketSlice.actions;  
 export default ticketSlice.reducer;
-
-
 
 
 // for query manipaltions later!!

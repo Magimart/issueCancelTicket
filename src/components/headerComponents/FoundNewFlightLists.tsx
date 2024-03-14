@@ -3,37 +3,63 @@ import Image from 'next/image';
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import React, {useEffect, useRef } from "react";
-import { useRouter } from 'next/router';
-import { bookSelectedFlightActions } from '@/redux/ticketSlice/allTicketsActions';
+import { useRouter, usePathname } from "next/navigation";
+import { addSelectedFlightActions, resetStatusActions } from '@/redux/ticketSlice/allTicketsActions';
+import { createBookingOrderActions } from '@/redux/ticketSlice/allBookingActions';
 import { getFullDayTime } from '@/lib/utils/helpers';
 import { CloseIcon } from './icons/SvgIconAssests';
 import { toggleFoundFlightActions } from '@/redux/toggleSlice/toggleActions';
-import type { FlightsInitials } from '@/lib/types/MyTypes';
+import type { FlightsInitials, CreateOrderInitials } from '@/lib/types/MyTypes';
+
+
 
 export default function FoundNewFlightLists(){
-    const {loading, errorMessage, status, ticketsDetails, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
+    const {loading,selectedFlight, errorMessage, status, ticketsDetails, foundNewFlights} = useSelector((state: RootState) => state.allTickets);
     const {userSession} = useSelector((state: RootState) => state.authUsers);
     const {cheapRecommendedFlights, foundFlights} = foundNewFlights;
     const {toggleFoundFlights} = useSelector((state: RootState) => state.toggleHomeMenu);
-     console.log(errorMessage, status);
+    const { bookingOrder} = useSelector((state: RootState) => state.allBooking);
+    const {orderStatus, orderMessage, orderError, order} = bookingOrder;
+
+    console.log(bookingOrder);
+
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
+    console.log("before booking selected ticket ===>", status, " new selected ticket", ticketsDetails);
 
     const bookSelectedFlight = (flight:FlightsInitials)=>{
         const newBooking ={
         user: userSession.userId,
          flight 
         }
-
-        console.log(newBooking)
-       dispatch(bookSelectedFlightActions(newBooking));
+       dispatch(addSelectedFlightActions(newBooking));
     }
 
-
-  return (
-           <div className="bg-red-600 relative  p-10 rounded-md -top-4
+    useEffect(() => {
+        if(selectedFlight && status === 200){
+            console.log("datA  was booked so wait a mooment")
+            const makeBookingOrder:CreateOrderInitials =  {
+                ticketId: ticketsDetails && ticketsDetails._id,
+                userId: ticketsDetails && ticketsDetails.user
+            } 
+            dispatch(createBookingOrderActions(makeBookingOrder));
+            //resett status
+            dispatch(resetStatusActions(status))
+        }
+        if(orderStatus === 200){
+            console.log("you can now push the router")
+            // push route to boooking details
+            router.push(`${process.env.BASE_URL}/bookings/orders/order_details/${order._id}`); 
+        }
+        
+    }, [dispatch, router, toggleFoundFlights, loading, ticketsDetails, selectedFlight, status, orderStatus, order._id]);
+     
+    return (
+            <div className="bg-red-600 relative  p-10 rounded-md -top-4
                xl:min-w-[900px]  x2l:min-w-[900px]
                flex-1 h-screen overflow-y-auto
-           ">
+              "
+            >
                 <div className=" flex items-center justify-between pb-6">
                     <div className="flex flex-col">
                         <h2 className="text-blue-900 font-semibold">Found Flights</h2>

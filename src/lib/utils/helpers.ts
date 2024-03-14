@@ -3,7 +3,7 @@ import moment from 'moment';
 // interface GetDate {
 //     (date: string): string;
 // }
-export const getFullDayTime = (date: Date) =>{                 
+export const getFullDayTime = (date: Date): string =>{                 
     return `${moment(date).format('llll')}`
 }
 

@@ -25,7 +25,7 @@ export default function AdjustBookingInfo(){
         };
     }, [dispatch, status,ticketsDetails,errorMessage, loading]);
     return (  
-       <div className={"h-[100vh] w-[100%] z-1 !!"}>
+       <div className={"h-[100vh] w-[100%] z-3 !!"}>
            <section className={`homeMenuWrap relativeü justify-end  
              flex flex-row h-full  bg-opacity-30 
              w-[100%]  
@@ -35,7 +35,7 @@ export default function AdjustBookingInfo(){
            >  
                {/* menu items_______________ right
                */}
-                <div className="menuItemsWrap w-[50%]  md:w-[70%] lg:w-[50%] xl:w-[50%] 2xl:w-[50%]
+                <div className="menuItemsWrap  w-[50%]  md:w-[70%] lg:w-[50%] xl:w-[50%] 2xl:w-[50%]
                     bg-white
                       bg-gradient-to-b from-transparent via-sky-50 to-sky-300 
                    "
@@ -88,6 +88,7 @@ export default function AdjustBookingInfo(){
                         {/* form */}
                         <div className="cancleTicketForm relative  
                          px-6 xl:px-8 2xl:px-8
+                          z
                          "
                         >
                            <FlightAvailability/>

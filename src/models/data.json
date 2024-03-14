@@ -21,7 +21,26 @@
         },
         "user": [], 
         "createdAt": "13:26"
-    }
+    },
+    {
+    "_id":{"$oid":"65f031374ade0f7682a8d7e0"},
+    "airlineName":"DP",
+    "departure":"MOW",
+    "destination":"BER",
+    "departureTime":{"$date":{"$numberLong":"1711523700000"}},
+    "arrivalTime":{"$date":{"$numberLong":"1712157900000"}},
+    "numberOfTransfers":{"$numberInt":"2"},
+    "flightNumber":{"$numberInt":"995"},
+    "costPrice":{
+        "price":{"$numberInt":"408"},
+        "currency":"USD"
+    },
+    "ticketStatus":{
+        "canclellation":{"canclellationDate":"Tue Mar 12 2024 11:40:55 GMT+0100 (Central European Standard Time)","cancellationState":false,"reasons":"unknown reasons"},"isTicketBooked":false},"user":[{"$oid":"65de079b3e76ff8e41047e4d"}],
+        "expiresAt":{"$date":{"$numberLong":"1710243651000"}
+    },
+    "createdAt":{"$date":{"$numberLong":"1710240000000"}},"__v":{"$numberInt":"0"}
+}
 
  
 ]

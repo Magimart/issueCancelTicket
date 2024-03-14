@@ -1,13 +1,18 @@
 export interface Ids {
     user: string, ticket: Object
-  }
+}
 
-  export interface ResponseI {
-    response:{
-      status: number;
-      data: object
-    }
-  }
+export interface CreateOrderInitials{ 
+    ticketId:string;
+    userId:string[]
+}
+  
+export interface ResponseI {
+response:{
+    status: number;
+    data: object
+}
+}
 
 export interface FlightsInitials {
     airline:string;
@@ -19,31 +24,30 @@ export interface FlightsInitials {
     price:number;
     return_at:Date;
     transfers:number;
-    }
+}
 
 export interface TicketInitials {
     _id: string
-    airlineName: string,  
-    departure: string,
-    destination: String,
-    arrivalTime: Date,
+    airlineName: string;  
+    departure: string;
+    destination: String;
+    arrivalTime: Date;
     departureTime: Date
-    numberOfTransfers:number, 
-    flightNumber:number, 
+    numberOfTransfers:number; 
+    flightNumber:number; 
     costPrice: {
-        price: number,
+        price: number;
         currency:string
-    },
+    };
     ticketStatus: {
         canclellation:  {
-            canclellationDate: string,
-            cancellationState: boolean,
+            canclellationDate: Date;
+            cancellationState: boolean;
             reasons: string
-        },
+        };
         isTicketBooked:false  
     },
-
-    user?: [],    // remove optional
+    user: string[];   
     expiresAt:Date
     createdAt:Date 
 }
@@ -54,18 +58,23 @@ export interface CancelTicket {
     ticketsDetails:TicketInitials;
  }
 
-export interface BookingInitials{
-    bookingName: string;
-    flightNumbers:string[];
-    numberOfTravelers: number;
-    seatNumber:string[];
-    totalPerson: {
-        price: number;
-        currency: string;
-    };
-    Ticket: string[];
-    user:string[]; 
-    createdAt:Date
+export interface BookingOrderInitials{
+    _id: string;
+    transactions: {
+        paymentConfirmation: boolean;
+        paymentMethods: {
+            methodType:string;
+            electronicCard: boolean;
+            paypal: boolean;
+            otherMethods: boolean;
+       },
+       transactionMessage: string;
+       transactionConfirmationDate: Date;
+       currency: string;
+     },
+     ticket: string[];
+     user: string[]; 
+     createdAt: Date;
 }
 
 export interface Credentials{

@@ -2,16 +2,18 @@
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import React, {useEffect, useRef, useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from "next/navigation";
 import { getTicketDetailsAction } from "@/redux/ticketSlice/allTicketsActions";
-import { CalenderIcon, EditorIcon } from "@/components/headerComponents/icons/SvgIconAssests";
+import { CalenderIcon, EuroCurrencyIcon } from "@/components/headerComponents/icons/SvgIconAssests";
 import AdjustBookingInfo from "@/components/headerComponents/AdjustTicketDetails";
 import { toggleBookingInfoActions, toggleFoundFlightActions } from "@/redux/toggleSlice/toggleActions";
 import axios from "axios";
 import FoundFlights from "@/components/headerComponents/FoundFlights";
 import { LoggedInUserAction } from "@/redux/userSlice/authUsersActions";
-import { changeBookingActions } from "@/redux/ticketSlice/allBookingActions";
-import type { BookingInitials} from "@/lib/types/MyTypes";
+import { changeBookingActions, resetCancelStatusAction } from "@/redux/ticketSlice/allBookingActions";
+// import type { BookingInitials} from "@/lib/types/MyTypes";
+import SuccessMessageToggle from "@/components/sharedComponents/SuccessMessageToggle";
+
 
 
 type Params = {
@@ -29,22 +31,20 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
   const {toggleFoundFlights} = useSelector((state: RootState) => state.toggleHomeMenu);
   const [userTicketId, setUserTicketId ] = useState<{user: string, ticket: Object}>({user: "", ticket: {}});
   const {cancelStatus, cancelMessage} = useSelector((state: RootState) => state.allBooking);
-
-  console.log(errorMessage, status);
-
-
+  const { toggleSuccessMessage} = useSelector((state: RootState) => state.toggleHomeMenu);
+  const {bookingOrder} = useSelector((state: RootState) => state.allBooking);
+  const {orderStatus, orderMessage, orderError, order} = bookingOrder;
+  const {transactions, ticket} = order;
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const ref = useRef(false);
-    const {
-      _id,   
-      airlineName, 
-      departure, departureTime, numberOfTransfers,flightNumber,destination,
-      arrivalTime, costPrice, ticketStatus, user,
-      createdAt 
-    } = ticketsDetails;
-  
+  const {
+    _id,  airlineName, departure, departureTime, numberOfTransfers,
+    flightNumber,destination, arrivalTime, costPrice, ticketStatus, user,
+    createdAt 
+  } = ticketsDetails;
 
-    console.log(userTicketId)
+  
     const getId = () =>{
       const cancelTicket = {
         cancel: true,
@@ -54,42 +54,98 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
       dispatch(changeBookingActions(cancelTicket))
     }
 
-    useEffect(() => {
-      if (ref.current === false) {  
-       dispatch(getTicketDetailsAction(id));
-       dispatch(LoggedInUserAction());
+    const handleToggleRemoveDiv =() => {
+      dispatch(toggleBookingInfoActions(toggleBooking))
+      dispatch(resetCancelStatusAction(cancelStatus))
+    }
+
+
+
+  useEffect(() => {
+    if (ref.current === false) {  
+    dispatch(getTicketDetailsAction(id));
+    dispatch(LoggedInUserAction());
+    }
+    return () => {
+      ref.current = true;
+      if(cheapRecommendedFlights && cheapRecommendedFlights.length){
+        //dispatch(toggleFoundFlightActions(toggleFoundFlights))
       }
-
-      console.log(ticketsDetails)
-
-      return () => {
-        ref.current = true;
-        if(cheapRecommendedFlights && cheapRecommendedFlights.length){
-          dispatch(toggleFoundFlightActions(toggleFoundFlights))
-        }
-      };
-    }, [dispatch,cheapRecommendedFlights, toggleFoundFlights, id, userName, loading, ticketsDetails]);
+      
+    };
+  }, [dispatch, cheapRecommendedFlights, toggleFoundFlights, id, userName, loading, ticketsDetails]);
 
 
     return (
-      <main className={`singlePageWraper ${toggleBooking && toggleBooking?"fixed h-screen w-screen":"relative w-full h-auto"} "}  md:flex  overflow-hidden" -z-10x p-0 m-0  left-0  flex items-center  `}>
-        
+      <main className={`singlePageWraper z-0 
+                       ${toggleBooking && toggleBooking?"fixed h-screen w-screen":"relative w-full h-auto"}
+                       ${cancelStatus && cancelStatus?"fixed":""}
+                        md:flex  overflow-hidden" p-0 m-0  left-0  flex items-center  `}>        
         <div className="adjustBookingWrapper  w-full h-autog flex flex-row justify-end top-0 right-0 absolute  ">
           {
             toggleBooking && <AdjustBookingInfo/>
           }
         </div>
-        <div className={`adjustBookingWrapper absolute ${ cheapRecommendedFlights &&cheapRecommendedFlights.length? "w-[98vw] h-screen":""}  w-fullx !! flex flex-row justify-start top-0 left-0  `}>
+        <div className={`adjustBookingWrapper absolute ${ cheapRecommendedFlights && cheapRecommendedFlights.length? "w-[98vw] h-screen":""}  w-fullx !! flex flex-row justify-start top-0 left-0  `}>
           {
             toggleFoundFlights? <FoundFlights/>:""
           }
         </div>
+        {/* successfully cancelled */}
+        {
+          cancelStatus && cancelStatus === 200? (
+          <div className="absolute bg-gradient-to-b from-transprent via-sky-200 to-sky-400 text-white 
+               flex  flex-col justify-center items-center w-[100%] bg-white bg-opacity-90 h-screen top-0 z-1 left-0">
+              <div className="w-fullk m-6">
+                 {
+                   !toggleSuccessMessage && <SuccessMessageToggle/>
+                 }
+                  
+              </div>
+              <div className="bg-sky-500 w-full flex space-x-6 items-center justify-center min-h-[20em] flex-row">
+                   <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row 2xl:flex-row items-center  space-x-7">
+                      <button 
+                            // onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
+                            onClick={()=> handleToggleRemoveDiv()}
 
-        <div className="relative top-24
+                            className="mt-6 text-base  text-white flex-row px-6 flex justify-center items-center bg-red-600 rounded-3xl
+                            leading-7"
+                          > 
+                            <span className="font-semibold mx-3">Book new flight</span> 
+                              <span
+                                className="bg-black-  bg-opacity-20 rounded-lg hover:white cursor-pointer "
+                              >
+                               <CalenderIcon/>
+                            </span>
+                         </button> 
+                         <span className="text-black font-bold h-12 flex items-center">or</span>
+                         <button 
+                            disabled={true}
+                            onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
+                            className="mt-6 opacity-30 text-base  text-white flex-row px-6 flex justify-center items-center bg-red-600 rounded-3xl
+                            leading-7"
+                          > 
+                            <span className="font-semibold mx-3">Claim for refund</span> 
+                              <span
+                                className="bg-black-  bg-opacity-20 rounded-lg hover:white cursor-pointer "
+                              >
+                               <EuroCurrencyIcon/>
+                            </span>
+                         </button> 
+                        
+                    </div> 
+                   <div className="">
+                    </div> 
+              </div>
+             </div>
+          ): ""
+        }
+
+        <div className="relative top-24 
           flex flex-rowxl flex-col 
           2xl:min-h-[20vh] 
           h-[32%] sm:h-[60%]   md:h-[60%]  md:lg:h-[60%]  lg:h-[60%]  xl:h-[82%]  2xl:xl:h-[82%] 
-          w-[100vw] text-white bg-sky-300"
+          w-[100vw] text-white bg-sky-300"          
         >
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center">
@@ -107,26 +163,16 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
                        {_id.toLocaleUpperCase()} 
                        {toggleFoundFlights} 
                       {/*  RETRUN SUCCESS MSG TO USER */}
+                      {/* Add refund button incase */}
                       {
-                        cancelStatus && cancelStatus === 200?(
+                        cancelStatus && cancelStatus === 200?("")
+                       :(
+                          // cancle flight
                           <button 
-                            onClick={()=>dispatch(toggleBookingInfoActions(toggleBooking))}
-                            className="mt-6 text-lg  text-white flex justify-center items-center bg-red-600 rounded-3xl
-                            leading-7"
-                          > 
-                            <span className="font-semibold mx-3">Book new flight</span> 
-                              <span
-                                className="bg-black- p-1 bg-opacity-20 rounded-lg hover:white cursor-pointer "
-                              >
-                                <CalenderIcon/>
-                            </span>
-                          </button> 
-                        ):(
-                          <button 
-                              onClick={() => getId()}
-                              className=" text-lg  text-white flexl justify-center items-center bg-red-600 rounded-3xl
-                              leading-7  px-4
-                              "
+                            onClick={() => getId()}
+                            className=" text-lg  text-white flexl justify-center items-center bg-red-600 rounded-3xl
+                            leading-7  px-4
+                            "
                           >
                             cancel flight                          
                           </button> 
@@ -165,7 +211,7 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
                   <h4 className="flex mt-6 items-center
                     leading-7 text-gray-600"
                   >                      
-                    <span className="pl-l"> Seat Number 
+                    <span className="pl-l"> Number of transfer
                       <span className="font-normal">(s)</span>
                       </span >: <span className="flex flex-row">
 

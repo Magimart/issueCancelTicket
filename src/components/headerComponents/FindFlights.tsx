@@ -56,7 +56,7 @@ const FindFlights = ( ) => {
               items-center
               space-y-8 
               relative
-              z-1
+              z-2
               bg-gradient-to-b from-transparent via-sky-50 to-sky-300  rounded-lg"
             initial={{ 
                 height: "1%", 

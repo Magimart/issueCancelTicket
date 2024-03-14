@@ -19,11 +19,9 @@ const LoginModel = ( ) => {
     const {loading,userSession, loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
     const {status, errorMessage, ticketsDetails} = useSelector((state: RootState) => state.allTickets);
     const {loginStatus, loginError, loginOk } =loginStatusMsg;
-    
     const dispatch = useDispatch<AppDispatch>();
     const pathName = usePathname();
     const router  = useRouter();
-
     const handleFormSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
         try{
             e.preventDefault();
@@ -32,18 +30,14 @@ const LoginModel = ( ) => {
             } 
             dispatch(LoginInUserActions(credentials));
         }catch(err){
-        console.log(err)
+           console.log(err)
         }
     }   
-
-
     useEffect(() => {  
         if(loginOk && loginStatus === 200){
             if(pathName === '/'){
-                console.log("this called at path", pathName)
                 router.push(`${process.env.BASE_URL}/tickets/ticket_details/${ticketsDetails._id}`); 
                 dispatch(toggleShowHideHomeMenuActions(isOpen));
-
             }else{
               router.push(`${process.env.BASE_URL}`);   //eslse ==> redirect to user page___for later!
             };

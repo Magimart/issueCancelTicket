@@ -6,7 +6,6 @@ import { getFullDayTime } from '@/lib/utils/helpers';
 import { TicketInitials } from '@/lib/types/MyTypes';
 
 export  async function GET(req: Request, res: Response) {
-
   try {
     const { method } = req;
      await dbConnect() 
@@ -22,7 +21,7 @@ export  async function GET(req: Request, res: Response) {
         return res;
           
       } catch (error) {
-          return new NextResponse("Something wrong please reload page" + error, {status: 500})
+          return new NextResponse("Something went wrong please reload page" + error, {status: 500})
       }
     };
   } catch (error) {
@@ -37,21 +36,16 @@ export  async function POST(req: Request, res: Response) {
   try {
 
     const { method } = req;
-     await dbConnect()
-      
+    await dbConnect()
     if(method !== "POST") {return}else{
-      try {
-        
-        let defaultCancellation: string = "default"
-        let cancellationDefaultDate: any = Date.now()
+      try {        
         const formdata= await req.json();
         const loggedUser = formdata.user;
-
         const {
           origin, airline,price, departure_at, return_at,
            expires_at, destination, flight_number, transfers
         } = formdata.flight;
- 
+
         let defaultTicketStatus = {
           canclellation: {
             canclellationDate: new Date,
@@ -63,7 +57,6 @@ export  async function POST(req: Request, res: Response) {
         let defaultPrice = {
           price: price, currency :"USD"
         }
-
         const ticket = await new Ticket({
           airlineName: await airline,
           departure: await origin,
@@ -77,17 +70,13 @@ export  async function POST(req: Request, res: Response) {
           expiresAt: expires_at,
           user: loggedUser,
           createdAt: getFullDayTime(new Date)
-      } as object as TicketInitials );
-
-
-        //const res = await ticket.save();
+         } as object as TicketInitials );
+        
         const bookeFlight = {
            res: await ticket.save(),
            message: "Your flight has been successfull booked"
         }
-
         let response = new NextResponse(JSON.stringify(bookeFlight), {status:200}); 
-        
         return response;
           
       } catch (error) {
