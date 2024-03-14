@@ -125,23 +125,12 @@ export const createBookingOrderActions = createAsyncThunk("createBookingOrderAct
  }
 );
 
-//http://localhost:3000/api/bookings/orders/order_details/:id
-// get items by ID
-// export const getBookingOrderByIdActions = createAsyncThunk("getBookingOrderByIdActions", async (id:any):Promise<AxiosResponse | ResponseI> => {
-//   try {
-//     const respose = await axios.get(`${process.env.BASE_URL}/api/bookings/orders/order_details/${id}`);
-//       return respose ;
-//    } catch (error) {
-//     return error as ResponseI
-//   }
-//  }
-// );
-
 // get booking by Id getBookingOrderDetailsAction
 export const getBookingOrderDetailsActions = createAsyncThunk("getBookingOrderDetailsActions", async (id:string):Promise<AxiosResponse | ResponseI> => {
-   let isId = "65f1935f231ed83e9633bbf0";
+   //let isId = "65f1935f231ed83e9633bbf0";
+   console.log("thisi is the id sent   ===>", id)
   try {
-    const respose = await axios.get(`${process.env.BASE_URL}/api/bookings/orders/order_details/${isId}`);
+    const respose = await axios.get(`${process.env.BASE_URL}/api/bookings/orders/order_details/${id}`);
       return respose ;
    } catch (error) {
     return error as ResponseI

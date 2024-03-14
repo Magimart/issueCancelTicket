@@ -20,14 +20,12 @@ export  async function POST(req: Request, res: Response) {
         const formdata= await req.json();
         const {ticketId, userId} = formdata;       
      
-        
         /**
            Below Promise is hardcoded will be validated with use of webhooks event listners
            find Ticket obj and update field isTicketBooked to true is payment succeeds          
          */
-        const order = await new BookingSchemaOrder<BookingOrderInitials>({
-            _id: "",
-            transactions: {
+        const order = await new BookingSchemaOrder({
+            transactions: {  // wait for updated values after payment confirmation
               paymentConfirmation: false,
               paymentMethods: {
                 methodType:"stripe",
@@ -41,8 +39,8 @@ export  async function POST(req: Request, res: Response) {
             }, 
             ticket: ticketId,  
             user: userId, 
-           createdAt: new Date
-        });
+            createdAt: new Date
+        } as BookingOrderInitials) ;
 
         const bookeFlight = {
            res: await order.save(),

@@ -6,6 +6,12 @@ import { getBookingOrderDetailsActions } from "@/redux/ticketSlice/allBookingAct
 import { getFullDayTime } from "@/lib/utils/helpers";
 
 
+
+type Params = {
+    params : {id: string}
+  }
+
+// const BookingOrdersDetailModel =({params : {id}}: Params) => {
 const BookingOrdersDetailModel =(params : {id: string}) => {
 
   const {bookingOrder,} = useSelector((state: RootState) => state.allBooking);
@@ -24,12 +30,11 @@ const {  paymentConfirmation, paymentMethods, transactionConfirmationDate, trans
   const {canclellation, isTicketBooked} = ticketStatus;
   const orderId = orderDetails && orderDetails._id;
   let ticketId = ticketDetails && ticketDetails._id;
-
+   
   const dispatch = useDispatch<AppDispatch>();
- let isId = ""
   useEffect(()=>{
-   dispatch(getBookingOrderDetailsActions(isId))
-  }, [dispatch, isId])
+   dispatch(getBookingOrderDetailsActions(params.id))
+  }, [dispatch, params.id])
   
   return (
     <main 

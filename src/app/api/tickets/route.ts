@@ -57,6 +57,7 @@ export  async function POST(req: Request, res: Response) {
         let defaultPrice = {
           price: price, currency :"USD"
         }
+        
         const ticket = await new Ticket({
           airlineName: await airline,
           departure: await origin,

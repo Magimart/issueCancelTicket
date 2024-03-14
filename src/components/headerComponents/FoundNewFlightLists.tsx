@@ -29,7 +29,7 @@ export default function FoundNewFlightLists(){
 
     const bookSelectedFlight = (flight:FlightsInitials)=>{
         const newBooking ={
-        user: userSession.userId,
+         user: userSession.userId,
          flight 
         }
        dispatch(addSelectedFlightActions(newBooking));

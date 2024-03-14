@@ -2,8 +2,11 @@
 import BookingOrdersDetailModel from "@/components/bodyComponents/BookingOrderDetails";
 import React from "react";
 
+type Params = {
+  params : {id: string}
+}
 
-const BookingOrdersDetailPage =() => {
+const BookingOrdersDetailPage =({params : {id}}: Params) => {
   return (
     <main 
       className="homeComponentWrapper 
@@ -11,7 +14,7 @@ const BookingOrdersDetailPage =() => {
        relativeg absolute flex items-center 
       " 
     >
-      <BookingOrdersDetailModel id={""}/>
+      <BookingOrdersDetailModel id={id}/>
     </main>
   )
 } 
