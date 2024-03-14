@@ -14,7 +14,7 @@ export async function GET( request: Request,{ params }: { params: { id: string}}
                 return new NextResponse(errorMessage, {status: 500});
             }
             let response = new NextResponse(JSON.stringify(ticketDetails), {status:200}); 
-        return response as unknown as TicketInitials;  // 4 later remove overload unknown 
+        return response;  // 4 later remove overload unknown 
     } catch (error) {
         const errorMessage:string = "INVALID TICKET check your ticket please."
         return new NextResponse(errorMessage + error, {status: 500});
