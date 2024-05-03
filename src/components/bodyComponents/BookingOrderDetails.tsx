@@ -17,11 +17,8 @@ const BookingOrdersDetailModel =(params : {id: string}) => {
   const {bookingOrder,} = useSelector((state: RootState) => state.allBooking);
   const {orderStatus, orderMessage, orderError, order, bookingOrderDetails} = bookingOrder;
   const {transactions, ticket} = order;
-
   const { orderDetails, ticketDetails} = bookingOrderDetails;
-  console.log(orderDetails)
-
-const {  paymentConfirmation, paymentMethods, transactionConfirmationDate, transactionMessage}= orderDetails.transactions;
+  const {  paymentConfirmation, paymentMethods, transactionConfirmationDate, transactionMessage}= orderDetails.transactions;
   const {electronicCard, paypal, methodType} = paymentMethods;
   const { airlineName, departure,destination, arrivalTime, departureTime, numberOfTransfers,
      flightNumber, costPrice, ticketStatus, createdAt
@@ -50,9 +47,9 @@ const {  paymentConfirmation, paymentMethods, transactionConfirmationDate, trans
                     flex flex-col md:flex-row bg-white   rounded-xl md:bg-transparent shadow-lg shadow-black/20 md:shadow-none gap-1">
                     <div className="min-w-[] bg-white shadow-lg rounded-md  hover:bg-gradient-to-r hover:from-red-50 hover:to-sky-50">
                         <div className="w-full h-[5em] items-center 
-                        flex  flex-row 
+                           flex  flex-row 
                             bg-gradient-to-t from-white to-sky-300
-                        "
+                            "
                         >
                         <h2 className="font-bold text-lg pb-4 px-3">Booking Number: <span className="text-md font-normal">{orderId}</span> </h2>                     
                     </div>

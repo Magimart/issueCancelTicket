@@ -15,7 +15,6 @@ export default function AdjustBookingInfo(){
 
     const isYear = new Date().getFullYear();
     const ref = useRef(false);
-    
     useEffect(() => {      
         if (ref.current === false) {
             dispatch(windowDimensionsActions());

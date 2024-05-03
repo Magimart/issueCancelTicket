@@ -11,7 +11,6 @@ import { Credentials } from "@/lib/types/MyTypes";
 import { toggleShowHideHomeMenuActions } from "@/redux/toggleSlice/toggleActions";
 
 const LoginModel = ( ) => {
-   
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
@@ -46,7 +45,6 @@ const LoginModel = ( ) => {
         }
     }, [router, pathName, loginError, loading, loginOk, loginStatus, dispatch, isOpen, ticketsDetails._id]);
     
-
     return(    
         <motion.div 
             className=" flex  justify-center

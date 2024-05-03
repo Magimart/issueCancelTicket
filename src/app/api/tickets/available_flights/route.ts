@@ -19,10 +19,10 @@ export  async function POST(req: Request, res: Response) {
           origin, destination, departDate, returnDate
         } = search 
 
+        // to b imlemented with a new Api resource
         // get flichts as per user query
         const availableFlights:any = await fetch(`https://api.travelpayouts.com/v1/prices/cheap?origin=${origin}&destination=${destination}&depart_date=${departDate}&return_date=${returnDate}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
         const available = await availableFlights.json();
-          
         const cheapestPrices:any = await axios.get(`https://api.travelpayouts.com/v1/prices/monthly?origin=${origin}&destination=${destination}&currency=USD&token=${process.env.TRAVEL_PAYOUT_TOKEN}`)
         .then(function(response){
            return response.data;

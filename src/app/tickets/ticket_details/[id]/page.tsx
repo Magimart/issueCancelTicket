@@ -59,8 +59,6 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
       dispatch(resetCancelStatusAction(cancelStatus))
     }
 
-
-
   useEffect(() => {
     if (ref.current === false) {  
     dispatch(getTicketDetailsAction(id));
@@ -75,12 +73,12 @@ export default function TicketiDetailsPage({params : {id}}: Params) {
     };
   }, [dispatch, cheapRecommendedFlights, toggleFoundFlights, id, userName, loading, ticketsDetails]);
 
-
     return (
       <main className={`singlePageWraper z-0 
-                       ${toggleBooking && toggleBooking?"fixed h-screen w-screen":"relative w-full h-auto"}
-                       ${cancelStatus && cancelStatus?"fixed":""}
-                        md:flex  overflow-hidden" p-0 m-0  left-0  flex items-center  `}>        
+        ${toggleBooking && toggleBooking?"fixed h-screen w-screen":"relative w-full h-auto"}
+        ${cancelStatus && cancelStatus?"fixed":""}
+        md:flex  overflow-hidden" p-0 m-0  left-0  flex items-center  `}
+      >        
         <div className="adjustBookingWrapper  w-full h-autog flex flex-row justify-end top-0 right-0 absolute  ">
           {
             toggleBooking && <AdjustBookingInfo/>

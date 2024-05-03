@@ -43,10 +43,7 @@ async function auth(req: CombineRequest, res: CombineResponse){
                 if (!isPasswordMatched) {
                     throw new Error('Invalid Email or Password')
                 }
-                    //return user ;                    
-                   return Promise.resolve(user);
-
-                } 
+                   return Promise.resolve(user);                } 
                ,
             })
         ],
@@ -54,20 +51,17 @@ async function auth(req: CombineRequest, res: CombineResponse){
             jwt: async ({token, user}) => {
                 user && (token.user = user);
                  return Promise.resolve(token) // trurn token)
-                //return token;
             },
 
             session: async ({session, token}) => {
                 session.user = token.user as UserModel;
                 //@ts-ignore
                  delete session.user?.password;                
-                //return session;
                 return Promise.resolve(session)
             }
         },
         secret: process.env.NEXTAUTH_SECRECT,
-       // database: process.env.DATABASE_CLOUD  
-       // debug: true,      
+           
     })
 }
 

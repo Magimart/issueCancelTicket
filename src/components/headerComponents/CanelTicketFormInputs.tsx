@@ -18,7 +18,6 @@ const CancelTicketFormInput = ( ) => {
     const {loginStatusMsg} = useSelector((state: RootState) => state.authUsers);
     const {loginStatus, loginOk } =loginStatusMsg;
     const router = useRouter();
-    const pathName = usePathname();
     const dispatch  = useDispatch<AppDispatch>();
 
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) => {         

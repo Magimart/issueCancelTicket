@@ -24,9 +24,7 @@ const RegisterUserModel = () => {
     });
     const [avatar, setAvatar]  = useState<string | any>('');
     const {loading, addNewUser} = useSelector((state: RootState) => state.authUsers);
-      const {registerStatus} = addNewUser;
-        console.log(addNewUser, pathName)
-   
+      const {registerStatus} = addNewUser;   
     useEffect(() => {
         //  if(success)  {
         //      router.push('/login')
@@ -35,7 +33,6 @@ const RegisterUserModel = () => {
         //   if(error)toast.error(error)
         if(registerStatus && registerStatus === 200){
             if(pathName === '/auth/register'){
-                console.log("function fired")
                 router.push(`${process.env.BASE_URL}/auth/login`); 
             };
             //eslse ==> redirect to user profile page___for later!

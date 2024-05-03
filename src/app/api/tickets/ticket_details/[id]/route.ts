@@ -8,7 +8,6 @@ export async function GET( request: Request,{ params }: { params: { id: string}}
     try {
         await dbConnect();
         const ticketDetails = await Ticket.findById(params.id);
-            // handle error if data is null or removed from db
             if(ticketDetails === null){
                 const errorMessage:string = "INVALID TICKET, this ticket may have expired."
                 return new NextResponse(errorMessage, {status: 500});
@@ -20,7 +19,6 @@ export async function GET( request: Request,{ params }: { params: { id: string}}
         return new NextResponse(errorMessage + error, {status: 500});
     }
 }
-
 
 // delete ticket from the database point http://localhost:3000/api/tickets/ticket_details/:id
 export async function DELETE( request: Request,{ params }: { params: { id: string}}) {                       

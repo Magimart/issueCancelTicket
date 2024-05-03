@@ -23,11 +23,8 @@ export async function GET( request: Request,{ params }: { params: { id: string}}
           .populate({
             path: '_id'
          }) as BookingOrderInitials;
-        // console.log("booking details ==> ",orderDetails);
         let ticketId =  orderDetails.ticket.toString();
         const getTicket = await Ticket.findById(ticketId);
-        console.log("ticket details ==> ",getTicket);
-
         const bookingOrder:BookingOrderState = {
             BookingOrder: {
                 _id: orderDetails._id,
@@ -78,7 +75,6 @@ export async function GET( request: Request,{ params }: { params: { id: string}}
          return response;   
     } catch (error) {
         const errorMessage:string = "INVALID Bookings details."
-        //console.log(errorMessage);
         return new NextResponse(errorMessage + error, {status: 500});
     }
 }
